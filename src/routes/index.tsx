@@ -6,29 +6,10 @@ import { Timers } from "../pages/timers";
 import { Goals } from "../pages/goals";
 import { Login } from "../pages/login";
 import { Register } from "../pages/register";
-
+import { Layout } from "../components/layout";
+import { PrivateRoutes } from "./privateRoutes";
 
 export const router = createBrowserRouter([
-    {
-        element: <Dashboard />,
-        path: "/"
-    },
-    {
-        element: <Calendar />,
-        path: "/calendar"
-    },
-    {
-        element: <Courses />,
-        path: "/courses"
-    },
-    {
-        element: <Timers />,
-        path: "/timers"
-    },
-    {
-        element: <Goals />,
-        path: "/goals"
-    },
     {
         element: <Login />,
         path: "/login"
@@ -36,5 +17,45 @@ export const router = createBrowserRouter([
     {
         element: <Register />,
         path: "/register"
+    },
+    {
+        element: <Layout />,
+        children: [
+            {
+                element:
+                    <PrivateRoutes>
+                        <Dashboard />
+                    </PrivateRoutes>,
+                path: "/"
+            },
+            {
+                element:
+                    <PrivateRoutes>
+                        <Calendar />
+                    </PrivateRoutes>,
+                path: "/calendar"
+            },
+            {
+                element:
+                    <PrivateRoutes>
+                        <Courses />
+                    </PrivateRoutes>,
+                path: "/courses"
+            },
+            {
+                element:
+                    <PrivateRoutes>
+                        <Timers />
+                    </PrivateRoutes>,
+                path: "/timers"
+            },
+            {
+                element:
+                    <PrivateRoutes>
+                        <Goals />
+                    </PrivateRoutes>,
+                path: "/goals"
+            },
+        ]
     }
 ])
