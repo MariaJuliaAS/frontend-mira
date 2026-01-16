@@ -1,5 +1,5 @@
 import { LuGraduationCap, LuLoader } from "react-icons/lu";
-import { Input } from "../../components/input";
+import { Input } from "../../components/ui/Input";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";

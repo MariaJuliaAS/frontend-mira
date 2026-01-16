@@ -2,7 +2,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LuGraduationCap, LuLoader } from "react-icons/lu";
-import { Input } from "../../components/input";
+import { Input } from "../../components/ui/Input";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../service/api";
