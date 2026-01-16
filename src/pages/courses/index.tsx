@@ -5,19 +5,33 @@ import { LiaClipboardListSolid } from "react-icons/lia";
 import { LuBookOpen, LuTarget } from "react-icons/lu";
 import { FiPlus } from "react-icons/fi";
 import { BsCalendar3 } from "react-icons/bs";
+import { GoClock, GoTrash, GoPencil } from "react-icons/go";
 import { useEffect, useState } from "react";
 import { api } from "../../service/api";
 
 interface CourseProps {
     id: string;
     name: string;
-    color: string;
     created_at: string;
     updated_at: string;
     teacher?: string;
     user_id: string;
+    goals: GoalProps[];
+    commitments: CommitmentProps[];
+    timers: TimerProps[];
 }
 
+interface GoalProps {
+    course_id: string;
+}
+
+interface CommitmentProps {
+    type: string;
+}
+
+interface TimerProps {
+    course_id: string;
+}
 
 export function Courses() {
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
@@ -53,66 +67,101 @@ export function Courses() {
         <main className="bg-zinc-200/10 min-h-screen">
             <Container>
 
-                <header className="flex justify-between">
+                <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="font-bold text-3xl">Matérias</h1>
-                        <span className="text-zinc-500">Gerencie suas matérias</span>
+                        <h1 className="font-bold text-2xl sm:text-3xl">Matérias</h1>
+                        <span className="text-zinc-500 text-sm sm:text-base">
+                            Gerencie suas matérias
+                        </span>
                     </div>
 
-                    <button className="flex items-center justify-center h-10 px-4 bg-blue-950 rounded-md text-white cursor-pointer hover:scale-105 transition-all sm:text-base text-sm">
-                        <FiPlus size={20} className="mr-2" />
+                    <button
+                        className=" flex items-center justify-center h-10 px-4 bg-blue-950 text-white rounded-md cursor-pointer hover:scale-105 transition-all text-sm sm:text-base w-full sm:w-auto"
+                    >
+                        <FiPlus size={18} className="mr-2" />
                         Nova Matéria
                     </button>
                 </header>
 
-                <section className="mt-12 grid grid-cols-3 gap-12">
+                <section
+                    className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12"
+                >
                     {courseList.map((course) => (
-                        <div key={course.id} className="bg-white border border-gray-200 rounded-2xl p-5 text-white shadow-lg hover:border-blue-800/40 transition-all duration-300">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-blue-800/40 p-3 rounded-xl">
-                                    <LuBookOpen size={22} className="text-blue-950" />
+                        <div
+                            key={course.id}
+                            className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-lg hover:border-blue-800/40 transition-all duration-300"
+                        >
+                            <div className="flex items-start gap-4">
+                                <div className="bg-blue-800/40 p-3 rounded-xl shrink-0">
+                                    <LuBookOpen size={20} className="text-blue-950" />
                                 </div>
 
-                                <div>
-                                    <p className="font-semibold text-lg text-black">{course.name}</p>
-                                    <span className="text-zinc-500">
-                                        {course.teacher ? `Prof. ${course.teacher}` : "Sem professor cadastrado"}
+                                <div className="min-w-0">
+                                    <p className="font-semibold text-base sm:text-lg text-black truncate">
+                                        {course.name}
+                                    </p>
+                                    <span className="text-zinc-500 text-xs sm:text-sm">
+                                        {course.teacher
+                                            ? `Prof. ${course.teacher}`
+                                            : "Sem professor cadastrado"}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2 text-zinc-400 text-sm mt-5">
-                                <p className="flex items-center gap-2">
-                                    <SlGraduation size={14} />
-                                    2 provas
-                                </p>
+                            <div>
+                                <div className="grid grid-cols-2 gap-3 text-zinc-400 text-xs sm:text-sm my-5">
+                                    <p className="flex items-center gap-2">
+                                        <SlGraduation size={14} />
+                                        {course.commitments.filter(c => c.type == "Prova").length}
+                                        {course.commitments.filter(c => c.type == "Prova").length == 1 ? " prova" : " provas"}
+                                    </p>
 
-                                <p className="flex items-center gap-2">
-                                    <LiaClipboardListSolid size={14} />
-                                    3 trabalhos
-                                </p>
+                                    <p className="flex items-center gap-2">
+                                        <LiaClipboardListSolid size={14} />
+                                        {course.commitments.filter(c => c.type == "Trabalho").length}
+                                        {course.commitments.filter(c => c.type == "Trabalho").length == 1 ? " trabalho" : " trabalhos"}
+                                    </p>
 
-                                <p className="flex items-center gap-2">
-                                    <CiViewList size={14} />
-                                    5 atividades
-                                </p>
+                                    <p className="flex items-center gap-2">
+                                        <CiViewList size={14} />
+                                        {course.commitments.filter(c => c.type == "Atividade").length}
+                                        {course.commitments.filter(c => c.type == "Atividade").length == 1 ? " atividade" : " atividades"}
+                                    </p>
 
-                                <p className="flex items-center gap-2">
-                                    <BsCalendar3 size={14} />
-                                    5 eventos
-                                </p>
+                                    <p className="flex items-center gap-2">
+                                        <BsCalendar3 size={14} />
+                                        {course.commitments.filter(c => c.type == "Evento").length}
+                                        {course.commitments.filter(c => c.type == "Evento").length == 1 ? " evento" : " eventos"}
+                                    </p>
 
-                                <p className="flex items-center gap-2">
-                                    <LuTarget size={14} />
-                                    5 metas
-                                </p>
+                                    <p className="flex items-center gap-2">
+                                        <LuTarget size={14} />
+                                        {course.goals.filter(c => c.course_id != null).length}
+                                        {course.goals.filter(c => c.course_id != null).length == 1 ? " meta" : " metas"}
+                                    </p>
+                                    <p className="flex items-center gap-2">
+                                        <GoClock size={14} />
+                                        {course.timers.filter(c => c.course_id != null).length}
+                                        {course.timers.filter(c => c.course_id != null).length == 1 ? " sessão de estudo" : " sessões de estudo"}
+                                    </p>
+                                </div>
+                                <div className="flex gap-4 w-full items-center ">
+                                    <button className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
+                                        <GoTrash size={16} />
+                                        Excluir
+                                    </button>
+                                    <button className="cursor-pointer transition-all duration-300 hover:text-white hover:bg-blue-950 hover:scale-105 text-blue-950 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
+                                        <GoPencil size={16} />
+                                        Editar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </section>
 
-
             </Container>
         </main>
+
     )
 }
