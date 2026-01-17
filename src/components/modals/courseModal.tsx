@@ -97,7 +97,7 @@ export function CourseModal({ closeModal, mode, onSuccess, course }: ModalProps)
 
     return (
         <div onClick={closeModal} className="bg-black/40 fixed inset-0 flex items-center justify-center z-10">
-            <main onClick={(e) => e.stopPropagation()} className="max-h-11/12 overflow-y-auto bg-white w-6/12 max-w-xl h-auto flex flex-col rounded-lg p-6 ">
+            <main onClick={(e) => e.stopPropagation()} className="max-h-11/12 overflow-y-auto bg-white sm: w-8/12 max-w-xl h-auto flex flex-col rounded-lg p-6 ">
 
                 <header className="border-b border-gray-200">
                     <div className="flex  justify-between mb-2">

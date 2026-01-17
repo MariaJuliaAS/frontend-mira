@@ -10,8 +10,9 @@ import { useEffect, useState } from "react";
 import { api } from "../../service/api";
 import { Button } from "../../components/ui/Button";
 import { CourseModal } from "../../components/modals/courseModal";
+import { ConfirmDelete } from "../../components/modals/confirmDelete";
 
-interface CourseProps {
+export interface CourseProps {
     id: string;
     name: string;
     created_at: string;
@@ -39,6 +40,7 @@ export function Courses() {
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
     const [createModalIsOpen, setCreateModalIsOpen] = useState<boolean>(false);
     const [editModalIsOpen, setEditModalIsOpen] = useState<boolean>(false);
+    const [modalConfirmDelete, setModalConfirmDelete] = useState<boolean>(false);
     const [selectedCourse, setSelectedCourse] = useState<CourseProps | null>();
 
     async function fetchCourses() {
@@ -153,7 +155,7 @@ export function Courses() {
                                         </p>
                                     </div>
                                     <div className="flex gap-4 w-full items-center ">
-                                        <button className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
+                                        <button onClick={() => { setModalConfirmDelete(true); setSelectedCourse(course) }} className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
                                             <GoTrash size={16} />
                                             Excluir
                                         </button>
@@ -172,6 +174,7 @@ export function Courses() {
 
             {createModalIsOpen && <CourseModal closeModal={() => setCreateModalIsOpen(false)} onSuccess={fetchCourses} mode="create" />}
             {editModalIsOpen && <CourseModal closeModal={() => setEditModalIsOpen(false)} onSuccess={fetchCourses} mode="edit" course={selectedCourse} />}
+            {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} course={selectedCourse} />}
 
         </main>
 
