@@ -39,30 +39,28 @@ export function Courses() {
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
-    useEffect(() => {
+    async function fetchCourses() {
+        const token = localStorage.getItem("@tokenMira");
 
-        async function fetchCourses() {
-            const token = localStorage.getItem("@tokenMira");
-
-            if (!token) {
-                console.error("No token found");
-                return;
-            }
-
-            try {
-                const response = await api.get("/course/all", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-
-                setCourseList(response.data);
-                console.log(response.data);
-            } catch (err) {
-                console.error("Error fetching courses", err);
-            }
+        if (!token) {
+            console.error("No token found");
+            return;
         }
 
+        try {
+            const response = await api.get("/course/all", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            setCourseList(response.data);
+        } catch (err) {
+            console.error("Error fetching courses", err);
+        }
+    }
+
+    useEffect(() => {
         fetchCourses();
     }, [])
 
@@ -166,7 +164,7 @@ export function Courses() {
 
             </Container>
 
-            {modalIsOpen && <CreateCourseModal closeModal={() => setModalIsOpen(false)} mode="create" />}
+            {modalIsOpen && <CreateCourseModal closeModal={() => setModalIsOpen(false)} onSuccess={fetchCourses} mode="create" />}
 
         </main>
 

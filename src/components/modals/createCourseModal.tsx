@@ -6,26 +6,56 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/Button";
 import { LuLoader } from "react-icons/lu";
 import { useState } from "react";
+import { api } from "../../service/api";
 
 type CourseModalModel = "create" | "edit";
 
 interface ModalProps {
     closeModal: () => void;
+    onSuccess: () => void;
     mode: CourseModalModel;
 }
 
 const schema = z.object({
     name: z.string().nonempty("O campo nome é obrigatório"),
-    teacher: z.string().nonempty("O campo professor é obrigatório")
+    teacher: z.string()
 })
 type FormData = z.infer<typeof schema>;
 
-export function CreateCourseModal({ closeModal, mode }: ModalProps) {
+export function CreateCourseModal({ closeModal, mode, onSuccess }: ModalProps) {
+    const token = localStorage.getItem("@tokenMira");
+
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
     const [loading, setLoading] = useState(false);
+
+    async function createCourse(data: FormData) {
+        setLoading(true)
+
+        try {
+            await api.post("/course",
+                {
+                    name: data.name,
+                    teacher: data.teacher
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            alert("Matéria criada com sucesso!")
+            onSuccess();
+            closeModal();
+        } catch (err) {
+            console.log("Error ao criar matéria: ", err)
+        } finally {
+            setLoading(false)
+        }
+
+    }
 
     return (
         <div onClick={closeModal} className="bg-black/40 fixed inset-0 flex items-center justify-center z-10">
@@ -38,8 +68,8 @@ export function CreateCourseModal({ closeModal, mode }: ModalProps) {
                     </div>
                 </header>
 
-                <form className="flex flex-col">
-                    <label className="text-black font-medium mt-4 mb-1 sm:text-base text-sm">Matériaa</label>
+                <form onSubmit={handleSubmit(createCourse)} className="flex flex-col">
+                    <label className="text-black font-medium mt-4 mb-1 sm:text-base text-sm">Matéria</label>
                     <Input
                         type="text"
                         placeholder="Ex.: Programação Orientada à Objetos"
