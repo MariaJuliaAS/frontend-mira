@@ -9,6 +9,7 @@ import { GoClock, GoTrash, GoPencil } from "react-icons/go";
 import { useEffect, useState } from "react";
 import { api } from "../../service/api";
 import { Button } from "../../components/ui/Button";
+import { CreateCourseModal } from "../../components/modals/createCourseModal";
 
 interface CourseProps {
     id: string;
@@ -36,6 +37,7 @@ interface TimerProps {
 
 export function Courses() {
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
+    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
 
@@ -78,6 +80,7 @@ export function Courses() {
 
                     <Button
                         type="button"
+                        onClick={() => setModalIsOpen(true)}
                     >
                         <FiPlus size={18} className="mr-2" />
                         Nova Matéria
@@ -162,6 +165,9 @@ export function Courses() {
                 </section>
 
             </Container>
+
+            {modalIsOpen && <CreateCourseModal closeModal={() => setModalIsOpen(false)} mode="create" />}
+
         </main>
 
     )
