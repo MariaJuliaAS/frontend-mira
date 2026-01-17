@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../service/api";
 import { useState } from "react";
+import { Button } from "../../components/ui/Button";
 
 const schema = z.object({
     name: z.string().nonempty("o campo nome é obrigatório"),
@@ -99,11 +100,11 @@ export function Register() {
                         />
                         <label className="text-zinc-500 ml-2 sm:text-base text-sm">{viewPass ? "Mostrar" : "Ocultar"} senha</label>
                     </div>
-                    <button disabled={loading} type="submit" className="flex items-center justify-center h-10 w-full bg-blue-950 rounded-md text-white cursor-pointer hover:scale-105 transition-all sm:text-base text-sm">
+                    <Button disabled={loading} type="submit" width="w-full">
                         {loading ?
                             <LuLoader size={18} color="#fff" className="animate-spin flex items-center justify-center" /> :
                             "Criar conta"}
-                    </button>
+                    </Button>
                 </form>
 
                 <p className="text-center sm:text-base text-sm">Já possui conta? <Link to='/login' className="text-blue-950 font-medium underline">Entre aqui</Link></p>

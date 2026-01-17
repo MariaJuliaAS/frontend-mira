@@ -6,6 +6,7 @@ import { Input } from "../../components/ui/Input";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../service/api";
+import { Button } from "../../components/ui/Button";
 
 const schema = z.object({
     email: z.string().email("email inválido").nonempty("o campo email é obrigatório"),
@@ -87,11 +88,11 @@ export function Login() {
                         />
                         <label className="text-zinc-500 ml-2 sm:text-base text-sm">{viewPass ? "Mostrar" : "Ocultar"} senha</label>
                     </div>
-                    <button disabled={loading} type="submit" className="flex items-center justify-center h-10 w-full bg-blue-950 rounded-md text-white cursor-pointer hover:scale-105 transition-all sm:text-base text-sm">
+                    <Button disabled={loading} type="submit" width="w-full">
                         {loading ?
                             <LuLoader size={18} color="#fff" className="animate-spin flex items-center justify-center" /> :
                             "Entrar"}
-                    </button>
+                    </Button>
                 </form>
 
                 <p className="text-center sm:text-base text-sm">Não possui conta? <Link to='/register' className="text-blue-950 font-medium underline">Criar conta</Link></p>

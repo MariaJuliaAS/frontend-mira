@@ -8,6 +8,7 @@ import { BsCalendar3 } from "react-icons/bs";
 import { GoClock, GoTrash, GoPencil } from "react-icons/go";
 import { useEffect, useState } from "react";
 import { api } from "../../service/api";
+import { Button } from "../../components/ui/Button";
 
 interface CourseProps {
     id: string;
@@ -75,12 +76,12 @@ export function Courses() {
                         </span>
                     </div>
 
-                    <button
-                        className=" flex items-center justify-center h-10 px-4 bg-blue-950 text-white rounded-md cursor-pointer hover:scale-105 transition-all text-sm sm:text-base w-full sm:w-auto"
+                    <Button
+                        type="button"
                     >
                         <FiPlus size={18} className="mr-2" />
                         Nova Matéria
-                    </button>
+                    </Button>
                 </header>
 
                 <section
