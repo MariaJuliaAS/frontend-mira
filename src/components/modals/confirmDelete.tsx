@@ -2,6 +2,7 @@ import { api } from "../../service/api";
 
 interface ConfirmDeleteProps {
     closeModal: () => void;
+    onSuccess: () => void;
     course?: CourseProps | null;
 }
 
@@ -29,7 +30,7 @@ interface TimerProps {
     course_id: string;
 }
 
-export function ConfirmDelete({ closeModal, course }: ConfirmDeleteProps) {
+export function ConfirmDelete({ closeModal, course, onSuccess }: ConfirmDeleteProps) {
     const items = [
         {
             count: course?.commitments.filter(c => c.type === "Prova").length ?? 0,
@@ -71,7 +72,8 @@ export function ConfirmDelete({ closeModal, course }: ConfirmDeleteProps) {
                 }
             })
             alert("Matéria deletada com sucesso!")
-            closeModal;
+            closeModal();
+            onSuccess();
         } catch (err) {
             console.log("Erro ao deletar matéria ", err)
         }

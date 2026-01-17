@@ -174,7 +174,7 @@ export function Courses() {
 
             {createModalIsOpen && <CourseModal closeModal={() => setCreateModalIsOpen(false)} onSuccess={fetchCourses} mode="create" />}
             {editModalIsOpen && <CourseModal closeModal={() => setEditModalIsOpen(false)} onSuccess={fetchCourses} mode="edit" course={selectedCourse} />}
-            {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} course={selectedCourse} />}
+            {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} onSuccess={fetchCourses} course={selectedCourse} />}
 
         </main>
 
