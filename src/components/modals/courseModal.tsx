@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/Button";
 import { LuLoader } from "react-icons/lu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../service/api";
 
 type CourseModalModel = "create" | "edit";
@@ -14,6 +14,13 @@ interface ModalProps {
     closeModal: () => void;
     onSuccess: () => void;
     mode: CourseModalModel;
+    course?: CourseProps | null;
+}
+
+interface CourseProps {
+    id: string;
+    name: string;
+    teacher?: string;
 }
 
 const schema = z.object({
@@ -22,35 +29,66 @@ const schema = z.object({
 })
 type FormData = z.infer<typeof schema>;
 
-export function CreateCourseModal({ closeModal, mode, onSuccess }: ModalProps) {
+export function CourseModal({ closeModal, mode, onSuccess, course }: ModalProps) {
     const token = localStorage.getItem("@tokenMira");
 
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
     const [loading, setLoading] = useState(false);
 
-    async function createCourse(data: FormData) {
+    useEffect(() => {
+        if (mode == "edit" && course) {
+            reset({
+                name: course.name,
+                teacher: course.teacher
+            })
+        } else {
+            reset({
+                name: "",
+                teacher: ""
+            })
+        }
+    }, [])
+
+    async function onSubmit(data: FormData) {
         setLoading(true)
 
         try {
-            await api.post("/course",
-                {
+
+            if (mode == "create") {
+                await api.post("/course",
+                    {
+                        name: data.name,
+                        teacher: data.teacher
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+                alert("Matéria criada com sucesso!")
+            }
+
+            if (mode == "edit" && course) {
+                await api.put(`/course/${course.id}`, {
                     name: data.name,
                     teacher: data.teacher
                 },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
-            alert("Matéria criada com sucesso!")
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                alert("Matéria editada com sucesso!")
+            }
+
             onSuccess();
             closeModal();
         } catch (err) {
-            console.log("Error ao criar matéria: ", err)
+            console.log("Error ao criar/editar matéria: ", err)
         } finally {
             setLoading(false)
         }
@@ -68,7 +106,7 @@ export function CreateCourseModal({ closeModal, mode, onSuccess }: ModalProps) {
                     </div>
                 </header>
 
-                <form onSubmit={handleSubmit(createCourse)} className="flex flex-col">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
                     <label className="text-black font-medium mt-4 mb-1 sm:text-base text-sm">Matéria</label>
                     <Input
                         type="text"
@@ -85,11 +123,20 @@ export function CreateCourseModal({ closeModal, mode, onSuccess }: ModalProps) {
                         register={register}
                         error={errors.teacher?.message}
                     />
-                    <Button disabled={loading} type="submit" width="w-full mt-6">
-                        {loading ?
-                            <LuLoader size={18} color="#fff" className="animate-spin flex items-center justify-center" /> :
-                            "Criar matéria"}
-                    </Button>
+                    <div className="flex mt-6 gap-4">
+                        <button onClick={closeModal} className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
+                            Cancelar
+                        </button>
+                        <Button disabled={loading} type="submit" width="w-full">
+                            {loading ? (
+                                <LuLoader size={18} className="animate-spin" />
+                            ) : mode === "create" ? (
+                                "Criar matéria"
+                            ) : (
+                                "Salvar alterações"
+                            )}
+                        </Button>
+                    </div>
                 </form>
             </main>
         </div>

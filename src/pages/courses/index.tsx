@@ -9,7 +9,7 @@ import { GoClock, GoTrash, GoPencil } from "react-icons/go";
 import { useEffect, useState } from "react";
 import { api } from "../../service/api";
 import { Button } from "../../components/ui/Button";
-import { CreateCourseModal } from "../../components/modals/createCourseModal";
+import { CourseModal } from "../../components/modals/courseModal";
 
 interface CourseProps {
     id: string;
@@ -37,7 +37,9 @@ interface TimerProps {
 
 export function Courses() {
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
-    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+    const [createModalIsOpen, setCreateModalIsOpen] = useState<boolean>(false);
+    const [editModalIsOpen, setEditModalIsOpen] = useState<boolean>(false);
+    const [selectedCourse, setSelectedCourse] = useState<CourseProps | null>();
 
     async function fetchCourses() {
         const token = localStorage.getItem("@tokenMira");
@@ -78,7 +80,7 @@ export function Courses() {
 
                     <Button
                         type="button"
-                        onClick={() => setModalIsOpen(true)}
+                        onClick={() => setCreateModalIsOpen(true)}
                     >
                         <FiPlus size={18} className="mr-2" />
                         Nova Matéria
@@ -152,7 +154,7 @@ export function Courses() {
                                         <GoTrash size={16} />
                                         Excluir
                                     </button>
-                                    <button className="cursor-pointer transition-all duration-300 hover:text-white hover:bg-blue-950 hover:scale-105 text-blue-950 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
+                                    <button onClick={() => { setEditModalIsOpen(true); setSelectedCourse(course) }} className="cursor-pointer transition-all duration-300 hover:text-white hover:bg-blue-950 hover:scale-105 text-blue-950 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
                                         <GoPencil size={16} />
                                         Editar
                                     </button>
@@ -164,7 +166,8 @@ export function Courses() {
 
             </Container>
 
-            {modalIsOpen && <CreateCourseModal closeModal={() => setModalIsOpen(false)} onSuccess={fetchCourses} mode="create" />}
+            {createModalIsOpen && <CourseModal closeModal={() => setCreateModalIsOpen(false)} onSuccess={fetchCourses} mode="create" />}
+            {editModalIsOpen && <CourseModal closeModal={() => setEditModalIsOpen(false)} onSuccess={fetchCourses} mode="edit" course={selectedCourse} />}
 
         </main>
 
