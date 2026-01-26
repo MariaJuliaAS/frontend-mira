@@ -19,6 +19,7 @@ import { Button } from "../../components/ui/Button";
 import { FiPlus } from "react-icons/fi";
 import { TbTrash } from "react-icons/tb";
 import { CommitmentModal } from "../../components/modals/commitmentModal";
+import { DetailCommitmentModal } from "../../components/modals/detailCommitmentDetail";
 
 const COMMITMENT_TYPES = [
     {
@@ -99,7 +100,9 @@ export function Calendar() {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [currentDate, setCurrentDate] = useState(new Date());
     const [commitments, setCommitments] = useState<CommitmentsProps[]>([]);
+    const [commitmentSelected, setCommitmentSelected] = useState<CommitmentsProps>();
     const [createModalIsOpen, setCreateModalIsOpen] = useState<Boolean>(false);
+    const [detailModalIsOpen, setDetailModalIsOpen] = useState<Boolean>(false);
 
     const today = new Date();
     const days = getMonthDays(currentDate);
@@ -275,7 +278,8 @@ export function Calendar() {
 
                                 return (
                                     <div key={c.id}
-                                        className={`w-full flex items-center justify-between gap-4 px-4 py-2 rounded-xl mb-3 ${typeConfig?.colors.bg} ring-1 ${typeConfig?.colors.ring} my-4`}>
+                                        onClick={() => { setDetailModalIsOpen(true), setCommitmentSelected(c) }}
+                                        className={`cursor-pointer w-full flex items-center justify-between gap-4 px-4 py-2 rounded-xl mb-3 ${typeConfig?.colors.bg} ring-1 ${typeConfig?.colors.ring} my-4 transition-all duration-300 hover:scale-105`}>
                                         <div className="flex flex-col">
                                             <p className="font-semibold" >{c.name}</p>
 
@@ -287,10 +291,7 @@ export function Calendar() {
                                             </div>
                                         </div>
 
-                                        <button
-                                            onClick={() => deleteCommitment(c.id)}
-                                            className="transition-all duration-300 hover:text-red-600 cursor-pointer"
-                                        >
+                                        <button onClick={() => deleteCommitment(c.id)} className="transition-all duration-300 hover:text-red-600 cursor-pointer">
                                             <TbTrash size={20} />
                                         </button>
                                     </div>
@@ -301,6 +302,7 @@ export function Calendar() {
             </Container>
 
             {createModalIsOpen && <CommitmentModal closeModal={() => setCreateModalIsOpen(false)} onSuccess={fetchCommitments} />}
+            {detailModalIsOpen && <DetailCommitmentModal closeModal={() => setDetailModalIsOpen(false)} commitment={commitmentSelected} onSuccess={fetchCommitments} />}
 
         </main>
     )
