@@ -277,20 +277,18 @@ export function Calendar() {
                                 )
 
                                 return (
-                                    <div key={c.id}
-                                        onClick={() => { setDetailModalIsOpen(true), setCommitmentSelected(c) }}
-                                        className={`cursor-pointer w-full flex items-center justify-between gap-4 px-4 py-2 rounded-xl mb-3 ${typeConfig?.colors.bg} ring-1 ${typeConfig?.colors.ring} my-4 transition-all duration-300 hover:scale-105`}>
-                                        <div className="flex flex-col">
-                                            <p className="font-semibold" >{c.name}</p>
-
-                                            <div>
+                                    <div className="flex gap-2">
+                                        <div key={c.id}
+                                            onClick={() => { setDetailModalIsOpen(true), setCommitmentSelected(c) }}
+                                            className={`cursor-pointer w-full flex items-center justify-between gap-4 px-4 py-2 rounded-xl mb-3 ${typeConfig?.colors.bg} ring-1 ${typeConfig?.colors.ring} my-4 transition-all duration-300 hover:scale-105`}>
+                                            <div className="flex flex-col">
+                                                <p className="font-semibold" >{c.name}</p>
                                                 {c.course?.name && (
-                                                    <span className="text-sm text-gray-400">{c.course.name} • </span>
+                                                    <span className="text-sm text-gray-400">{c.course.name}</span>
                                                 )}
-                                                <span className="text-sm text-gray-400">{typeConfig?.label}</span>
                                             </div>
+                                            <span className={`border ${typeConfig?.colors.text} px-3 rounded-full text-sm `}>{typeConfig?.label}</span>
                                         </div>
-
                                         <button onClick={() => deleteCommitment(c.id)} className="transition-all duration-300 hover:text-red-600 cursor-pointer">
                                             <TbTrash size={20} />
                                         </button>

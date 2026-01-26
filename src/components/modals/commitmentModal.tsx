@@ -85,7 +85,7 @@ export function CommitmentModal({ closeModal, onSuccess }: ModalProps) {
         }
 
         try {
-            const date = format(data.date, "dd/MM/yyyy", { locale: ptBR })
+            const date = format(data.date + "T00:00:00", "dd/MM/yyyy", { locale: ptBR })
 
             await api.post("/commitment",
                 {
