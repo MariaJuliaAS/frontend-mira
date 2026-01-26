@@ -121,26 +121,26 @@ export function Courses() {
                                     <div className="grid grid-cols-2 gap-3 text-zinc-400 text-xs sm:text-sm my-5">
                                         <p className="flex items-center gap-2">
                                             <SlGraduation size={14} />
-                                            {course.commitments.filter(c => c.type == "Prova").length}
-                                            {course.commitments.filter(c => c.type == "Prova").length == 1 ? " prova" : " provas"}
+                                            {course.commitments.filter(c => c.type == "PROVA").length}
+                                            {course.commitments.filter(c => c.type == "PROVA").length == 1 ? " prova" : " provas"}
                                         </p>
 
                                         <p className="flex items-center gap-2">
                                             <LiaClipboardListSolid size={14} />
-                                            {course.commitments.filter(c => c.type == "Trabalho").length}
-                                            {course.commitments.filter(c => c.type == "Trabalho").length == 1 ? " trabalho" : " trabalhos"}
+                                            {course.commitments.filter(c => c.type == "TRABALHO").length}
+                                            {course.commitments.filter(c => c.type == "TRABALHO").length == 1 ? " trabalho" : " trabalhos"}
                                         </p>
 
                                         <p className="flex items-center gap-2">
                                             <CiViewList size={14} />
-                                            {course.commitments.filter(c => c.type == "Atividade").length}
-                                            {course.commitments.filter(c => c.type == "Atividade").length == 1 ? " atividade" : " atividades"}
+                                            {course.commitments.filter(c => c.type == "ATIVIDADE").length}
+                                            {course.commitments.filter(c => c.type == "ATIVIDADE").length == 1 ? " atividade" : " atividades"}
                                         </p>
 
                                         <p className="flex items-center gap-2">
                                             <BsCalendar3 size={14} />
-                                            {course.commitments.filter(c => c.type == "Evento").length}
-                                            {course.commitments.filter(c => c.type == "Evento").length == 1 ? " evento" : " eventos"}
+                                            {course.commitments.filter(c => c.type == "EVENTO").length}
+                                            {course.commitments.filter(c => c.type == "EVENTO").length == 1 ? " evento" : " eventos"}
                                         </p>
 
                                         <p className="flex items-center gap-2">
