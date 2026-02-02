@@ -116,7 +116,35 @@ export function Goals() {
             }
             alert("Tópico deletado com sucesso");
         } catch (error) {
-            console.error("Erro ao buscar metas: ", error)
+            console.error("Erro ao deletar tópico: ", error)
+        }
+    }
+
+    async function deleteGoal(id: string) {
+        const token = localStorage.getItem("@tokenMira");
+
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            await api.delete(`/goal/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const updateGoals = goalList.filter(g => g.id !== id)
+            setGoalList(updateGoals);
+
+            if (goalSelected?.id === id) {
+                setGoalSelected(null);
+            }
+
+            alert("Meta deletada com sucesso");
+        } catch (error) {
+            console.error("Erro ao deletar meta: ", error)
         }
     }
 
@@ -145,42 +173,47 @@ export function Goals() {
                     <section className="w-full flex-1">
 
                         {goalList.map((g) => (
-                            <div onClick={() => setGoalSelected(g)} className={`w-full bg-white border rounded-2xl p-4 shadow-lg mb-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-950 ${goalSelected?.id == g.id ? "border-blue-950 scale-105" : "border-gray-200"}`} key={g.id}>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold">
-                                            <LuTarget size={24} className="text-blue-950" />
-                                        </div>
+                            <div className="flex items-center gap-6 relative">
+                                <div key={g.id} onClick={() => setGoalSelected(g)} className={`w-full bg-white border rounded-2xl p-4 shadow-lg mb-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-950 ${goalSelected?.id == g.id ? "border-blue-950 scale-105" : "border-gray-200"}`}>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold">
+                                                <LuTarget size={24} className="text-blue-950" />
+                                            </div>
 
-                                        <div>
-                                            <h2 className="sm:text-lg text-base font-semibold text-gray-900">
-                                                {g.name}
-                                            </h2>
-                                            <p className="text-sm text-gray-500">
-                                                Prazo: {format(
-                                                    parse(g.end_date, "dd/MM/yyyy", new Date()),
-                                                    "MMM yyyy",
-                                                    { locale: ptBR }
-                                                )}
-                                            </p>
+                                            <div>
+                                                <h2 className="sm:text-lg text-base font-semibold text-gray-900">
+                                                    {g.name}
+                                                </h2>
+                                                <p className="text-sm text-gray-500">
+                                                    Prazo: {format(
+                                                        parse(g.end_date, "dd/MM/yyyy", new Date()),
+                                                        "MMM yyyy",
+                                                        { locale: ptBR }
+                                                    )}
+                                                </p>
+                                            </div>
                                         </div>
+                                        <button onClick={(e) => { e.stopPropagation(); deleteGoal(g.id); }} className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 shadow-sm">
+                                            <TbTrash size={16} />
+                                        </button>
                                     </div>
-                                </div>
 
-                                <div className="flex gap-3 mt-2">
-                                    {g.course && (
-                                        <span className="text-sm text-gray-500">
-                                            {g.course.name}
-                                        </span>
-                                    )}
+                                    <div className="flex gap-3 mt-2">
+                                        {g.course && (
+                                            <span className="text-sm text-gray-500">
+                                                {g.course.name}
+                                            </span>
+                                        )}
 
-                                    {g.goalsTopcis && (
-                                        <span className="text-sm text-gray-500 flex items-center">
-                                            <BsLightning size={16} className="text-blue-600" />
-                                            {g.goalsTopcis?.length} tópico(s)
-                                        </span>
-                                    )}
+                                        {g.goalsTopcis && (
+                                            <span className="text-sm text-gray-500 flex items-center">
+                                                <BsLightning size={16} className="text-blue-600" />
+                                                {g.goalsTopcis?.length} tópico(s)
+                                            </span>
+                                        )}
 
+                                    </div>
                                 </div>
                             </div>
                         ))}
