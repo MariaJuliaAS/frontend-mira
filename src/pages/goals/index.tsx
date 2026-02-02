@@ -171,8 +171,8 @@ export function Goals() {
                     </Button>
                 </header>
 
-                <div className="mt-8 sm:mt-12 flex w-full gap-8">
-                    <section className="w-full flex-1">
+                <div className="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <section className="lg:col-span-1">
 
                         {goalList.map((g) => (
                             <div className="flex items-center gap-6 relative">
@@ -221,12 +221,12 @@ export function Goals() {
                         ))}
 
                     </section>
-                    <section className="w-full flex-2 bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
+                    <section className="lg:col-span-2 bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
                         {goalSelected ? (
                             <div>
                                 <div className="mb-4 flex items-center justify-between">
                                     <div>
-                                        <p className="font-semibold text-xl">{goalSelected?.name}</p>
+                                        <p className="font-bold sm:text-xl text-lg">{goalSelected?.name}</p>
                                         <span className="italic text-gray-500">{goalSelected?.description}</span>
                                     </div>
                                     <span className="text-gray-500">
@@ -239,10 +239,10 @@ export function Goals() {
                                 </div>
 
                                 <div className="mt-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h3 className="font-bold text-lg">Tópicos Técnicos</h3>
-                                        <button className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300">
-                                            <FiPlus size={18} />
+                                    <div className="sm:flex sm:items-center sm:justify-between mb-4 sm:flex-row">
+                                        <h3 className="font-semibold sm:text-lg text-base">Tópicos Técnicos</h3>
+                                        <button className="sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300">
+                                            <FiPlus className="sm:text-lg text-base" />
                                             Adicionar Tópico
                                         </button>
                                     </div>
