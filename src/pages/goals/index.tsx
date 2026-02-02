@@ -18,15 +18,52 @@ interface GoalsProps {
         id: string;
         name: string;
     };
-    goalsTopic?: {
+    goalsTopcis?: {
         id: string;
         name: string;
+        completed?: boolean;
     }[];
 }
 
 export function Goals() {
     const [goalList, setGoalList] = useState<GoalsProps[]>([]);
     const [goalSelected, setGoalSelected] = useState<GoalsProps | null>(null);
+
+    async function toggleTopicCompletion(id: string) {
+        const token = localStorage.getItem("@tokenMira");
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            const isCompleted = !goalSelected?.goalsTopcis?.find(t => t.id === id)?.completed;
+
+            await api.put(`/goal/topic/${id}`, {
+                completed: isCompleted
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (goalSelected) {
+                const updateTopics = goalSelected.goalsTopcis?.map(t => t.id === id ?
+                    { ...t, completed: isCompleted } : t
+                )
+                const updatedGoal = {
+                    ...goalSelected,
+                    goalsTopcis: updateTopics
+                }
+
+                setGoalSelected(updatedGoal);
+                setGoalList(goalList.map(g => g.id === goalSelected.id ? updatedGoal : g))
+            }
+
+        } catch (error) {
+            console.error("Erro ao atualizar tópico: ", error)
+        }
+    }
 
     async function fecthGoals() {
         const token = localStorage.getItem("@tokenMira");
@@ -51,6 +88,7 @@ export function Goals() {
     useEffect(() => {
         fecthGoals();
     }, [])
+
 
     return (
         <main className="bg-zinc-200/10 min-h-screen">
@@ -105,10 +143,10 @@ export function Goals() {
                                         </span>
                                     )}
 
-                                    {g.goalsTopic && (
+                                    {g.goalsTopcis && (
                                         <span className="text-sm text-gray-500 flex items-center">
                                             <BsLightning size={16} className="text-blue-600" />
-                                            {g.goalsTopic?.length} tópico(s)
+                                            {g.goalsTopcis?.length} tópico(s)
                                         </span>
                                     )}
 
@@ -117,12 +155,70 @@ export function Goals() {
                         ))}
 
                     </section>
-                    <section className="w-full flex-2 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg">
-                        <h1>section 2</h1>
-                    </section>
-                </div>
+                    <section className="w-full flex-2 bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
+                        {goalSelected ? (
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <div>
+                                        <p className="font-semibold text-xl">{goalSelected?.name}</p>
+                                        <span className="italic text-gray-500">{goalSelected?.description}</span>
+                                    </div>
+                                    <span className="text-gray-500">
+                                        {format(
+                                            parse(goalSelected?.end_date, "dd/MM/yyyy", new Date()),
+                                            "MMM yyyy",
+                                            { locale: ptBR }
+                                        )}
+                                    </span>
+                                </div>
 
-            </Container>
-        </main>
+                                <div className="mt-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="font-bold text-lg">Tópicos Técnicos</h3>
+                                        <button className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300">
+                                            <FiPlus size={18} />
+                                            Adicionar Tópico
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {goalSelected.goalsTopcis && goalSelected.goalsTopcis.length > 0 ? (
+                                            goalSelected.goalsTopcis.map((t) => (
+                                                <div
+                                                    key={t.id}
+                                                    className={`flex items-center justify-between gap-3 rounded-xl border p-4 transition-all duration-300 ${t.completed ? "border-green-500 bg-green-500/30" : "border-gray-300 bg-white hover:border-blue-950"}`}
+                                                >
+                                                    <div onClick={() => toggleTopicCompletion(t.id)} className="flex gap-2 cursor-pointer">
+                                                        <div className={`flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-400 transition-all duration-300 ${t.completed ? "border-none" : ""} `}>
+                                                            {t.completed && (
+                                                                <div className="bg-green-500/80 rounded-full h-6 w-6 text-white text-center">
+                                                                    ✓
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <p className={`font-medium text-sm ${t.completed ? "text-green-500" : "text-gray-900"}`}>{t.name} </p>
+                                                    </div>
+                                                    <button className="transition-all duration-300 hover:text-red-600 cursor-pointer">
+                                                        <TbTrash size={20} />
+                                                    </button>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="col-span-full text-center py-8">
+                                                <p className="text-gray-400 text-sm">Nenhum tópico adicionado ainda</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <p className="text-gray-500">Selecione uma meta para ver os detalhes</p>
+                            </div>
+                        )}
+                    </section>
+                </div >
+
+            </Container >
+        </main >
     )
 }
