@@ -29,6 +29,30 @@ export function Goals() {
     const [goalList, setGoalList] = useState<GoalsProps[]>([]);
     const [goalSelected, setGoalSelected] = useState<GoalsProps | null>(null);
 
+    async function fecthGoals() {
+        const token = localStorage.getItem("@tokenMira");
+
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            const response = await api.get("/goal", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setGoalList(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar metas: ", error)
+        }
+    }
+
+    useEffect(() => {
+        fecthGoals();
+    }, [])
+
     async function toggleTopicCompletion(id: string) {
         const token = localStorage.getItem("@tokenMira");
         if (!token) {
@@ -65,7 +89,7 @@ export function Goals() {
         }
     }
 
-    async function fecthGoals() {
+    async function deleteGoalTopic(id: string) {
         const token = localStorage.getItem("@tokenMira");
 
         if (!token) {
@@ -74,20 +98,27 @@ export function Goals() {
         }
 
         try {
-            const response = await api.get("/goal", {
+            await api.delete(`/goal/topic/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            setGoalList(response.data);
+
+            if (goalSelected) {
+                const updateTopics = goalSelected.goalsTopcis?.filter(t => t.id !== id)
+                const updatedGoal = {
+                    ...goalSelected,
+                    goalsTopcis: updateTopics
+                }
+
+                setGoalSelected(updatedGoal);
+                setGoalList(prev => prev.map(g => g.id === updatedGoal.id ? updatedGoal : g));
+            }
+            alert("Tópico deletado com sucesso");
         } catch (error) {
             console.error("Erro ao buscar metas: ", error)
         }
     }
-
-    useEffect(() => {
-        fecthGoals();
-    }, [])
 
 
     return (
@@ -197,7 +228,7 @@ export function Goals() {
                                                         </div>
                                                         <p className={`font-medium text-sm ${t.completed ? "text-green-500" : "text-gray-900"}`}>{t.name} </p>
                                                     </div>
-                                                    <button className="transition-all duration-300 hover:text-red-600 cursor-pointer">
+                                                    <button onClick={() => deleteGoalTopic(t.id)} className="transition-all duration-300 hover:text-red-600 cursor-pointer">
                                                         <TbTrash size={20} />
                                                     </button>
                                                 </div>
