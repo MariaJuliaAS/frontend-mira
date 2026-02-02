@@ -68,6 +68,30 @@ export function Courses() {
         fetchCourses();
     }, [])
 
+    async function deleteCourse(id: string) {
+        const token = localStorage.getItem("@tokenMira");
+
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            await api.delete(`/course/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            const updateCourses = courseList.filter(c => c.id !== id)
+            setCourseList(updateCourses);
+
+            alert("Curso deletado com sucesso");
+        } catch (error) {
+            console.error("Erro ao deletar curso: ", error)
+        }
+    }
+
     return (
         <main className="bg-zinc-200/10 min-h-screen">
             <Container>
@@ -174,7 +198,7 @@ export function Courses() {
 
             {createModalIsOpen && <CourseModal closeModal={() => setCreateModalIsOpen(false)} onSuccess={fetchCourses} mode="create" />}
             {editModalIsOpen && <CourseModal closeModal={() => setEditModalIsOpen(false)} onSuccess={fetchCourses} mode="edit" course={selectedCourse} />}
-            {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} onSuccess={fetchCourses} course={selectedCourse} />}
+            {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} deleteCourse={deleteCourse} course={selectedCourse} />}
 
         </main>
 

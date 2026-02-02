@@ -8,8 +8,9 @@ import { ptBR } from "date-fns/locale";
 import { LuTarget } from "react-icons/lu";
 import { TbTrash } from "react-icons/tb";
 import { BsLightning } from "react-icons/bs";
+import { ConfirmDelete } from "../../components/modals/confirmDelete";
 
-interface GoalsProps {
+export interface GoalsProps {
     id: string;
     name: string;
     description: string;
@@ -28,6 +29,7 @@ interface GoalsProps {
 export function Goals() {
     const [goalList, setGoalList] = useState<GoalsProps[]>([]);
     const [goalSelected, setGoalSelected] = useState<GoalsProps | null>(null);
+    const [modalConfirmDelete, setModalConfirmDelete] = useState<boolean>(false);
 
     async function fecthGoals() {
         const token = localStorage.getItem("@tokenMira");
@@ -194,7 +196,7 @@ export function Goals() {
                                                 </p>
                                             </div>
                                         </div>
-                                        <button onClick={(e) => { e.stopPropagation(); deleteGoal(g.id); }} className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 shadow-sm">
+                                        <button onClick={(e) => { e.stopPropagation(); setModalConfirmDelete(true); setGoalSelected(g) }} className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 shadow-sm">
                                             <TbTrash size={16} />
                                         </button>
                                     </div>
@@ -283,6 +285,7 @@ export function Goals() {
                 </div >
 
             </Container >
+            {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} goal={goalSelected} deleteGoal={deleteGoal} />}
         </main >
     )
 }

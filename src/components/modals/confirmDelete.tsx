@@ -1,51 +1,32 @@
-import { api } from "../../service/api";
+import type { CourseProps } from "../../pages/courses";
+import type { GoalsProps } from "../../pages/goals";
 
 interface ConfirmDeleteProps {
     closeModal: () => void;
-    onSuccess: () => void;
+    onSuccess?: () => void;
     course?: CourseProps | null;
+    goal?: GoalsProps | null;
+    deleteGoal?: (id: string) => void;
+    deleteCourse?: (id: string) => void;
 }
 
-export interface CourseProps {
-    id: string;
-    name: string;
-    created_at: string;
-    updated_at: string;
-    teacher?: string;
-    user_id: string;
-    goals: GoalProps[];
-    commitments: CommitmentProps[];
-    timers: TimerProps[];
-}
 
-interface GoalProps {
-    course_id: string;
-}
-
-interface CommitmentProps {
-    type: string;
-}
-
-interface TimerProps {
-    course_id: string;
-}
-
-export function ConfirmDelete({ closeModal, course, onSuccess }: ConfirmDeleteProps) {
+export function ConfirmDelete({ closeModal, course, goal, onSuccess, deleteGoal, deleteCourse }: ConfirmDeleteProps) {
     const items = [
         {
-            count: course?.commitments.filter(c => c.type === "Prova").length ?? 0,
+            count: course?.commitments.filter(c => c.type === "PROVA").length ?? 0,
             label: "prova",
         },
         {
-            count: course?.commitments.filter(c => c.type === "Trabalho").length ?? 0,
+            count: course?.commitments.filter(c => c.type === "TRABALHO").length ?? 0,
             label: "trabalho",
         },
         {
-            count: course?.commitments.filter(c => c.type === "Atividade").length ?? 0,
+            count: course?.commitments.filter(c => c.type === "ATIVIDADE").length ?? 0,
             label: "atividade",
         },
         {
-            count: course?.commitments.filter(c => c.type === "Evento").length ?? 0,
+            count: course?.commitments.filter(c => c.type === "EVENTO").length ?? 0,
             label: "evento",
         },
         {
@@ -58,31 +39,39 @@ export function ConfirmDelete({ closeModal, course, onSuccess }: ConfirmDeletePr
         },
     ];
     const hasRelatedItems = items.some(item => item.count > 0);
-    const token = localStorage.getItem("@tokenMira");
 
     async function handleDelete() {
-        if (!course) {
-            console.log("Nenhum curso a ser deletado")
+        try {
+            if (course) {
+                deleteCourse?.(course.id);
+            }
+
+            if (goal) {
+                deleteGoal?.(goal.id);
+            }
+        } catch (err) {
+            console.error("Erro ao deletar matéria/ meta: ", err)
+        } finally {
+            onSuccess?.();
+            closeModal();
         }
 
-        try {
-            await api.delete(`/course/${course?.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            alert("Matéria deletada com sucesso!")
-            closeModal();
-            onSuccess();
-        } catch (err) {
-            console.log("Erro ao deletar matéria ", err)
-        }
     }
 
     return (
         <div onClick={closeModal} className="bg-black/40 fixed inset-0 flex items-center justify-center z-10">
             <main onClick={(e) => e.stopPropagation()} className="max-h-11/12 overflow-y-auto bg-white sm:w-4/12 w-8/12 max-w-xl h-auto flex flex-col rounded-md p-6 ">
-                {hasRelatedItems ? (
+
+                {goal && (
+                    <>
+                        <p className="sm:text-lg text-base">
+                            A meta <strong>{goal?.name}</strong>
+                            {goal.goalsTopcis && goal.goalsTopcis?.length > 0 ? ` contém ${goal.goalsTopcis.length} tópico${goal.goalsTopcis.length > 1 ? "s" : ""}` : " não contém nenhum tópico"}.
+                        </p>
+                    </>
+                )}
+
+                {course && hasRelatedItems && (
                     <>
                         <p className="sm:text-lg text-base">
                             A matéria <strong>{course?.name}</strong> contém{" "}
@@ -94,14 +83,12 @@ export function ConfirmDelete({ closeModal, course, onSuccess }: ConfirmDeletePr
                                         {item.count > 1 ? "s" : ""}
                                         {index < array.length - 1 ? ", " : ""}
                                     </span>
-                                ))}
-                            . Essa ação excluirá tudo e será irreversível.
+                                ))}.
                         </p>
-                        <p className="sm:text-lg text-base">Deseja excluir mesmo assim?</p>
                     </>
-                ) : (
-                    <p>Deseja excluir essa matéria?</p>
                 )}
+
+                <p className="sm:text-lg text-base">Essa ação excluirá tudo e será irreversível. Deseja excluir mesmo assim?</p>
 
                 <div className="flex gap-4 w-full items-center mt-4">
                     <button onClick={closeModal} className="cursor-pointer transition-all duration-300 hover:scale-105  text-red-600 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
