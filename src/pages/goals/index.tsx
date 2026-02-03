@@ -32,6 +32,7 @@ export function Goals() {
     const [goalSelected, setGoalSelected] = useState<GoalsProps | null>(null);
     const [modalConfirmDelete, setModalConfirmDelete] = useState<boolean>(false);
     const [modalCreateGoal, setModalCreateGoal] = useState<boolean>(false);
+    const [topicName, setTopicName] = useState<string>("");
 
     async function fecthGoals() {
         const token = localStorage.getItem("@tokenMira");
@@ -47,6 +48,7 @@ export function Goals() {
                     Authorization: `Bearer ${token}`
                 }
             });
+            setGoalSelected(response.data[0]);
             setGoalList(response.data);
         } catch (error) {
             console.error("Erro ao buscar metas: ", error)
@@ -152,6 +154,30 @@ export function Goals() {
         }
     }
 
+    async function addGoalTopic(name: string) {
+        const token = localStorage.getItem("@tokenMira");
+
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            await api.post(`/goal/topic/${goalSelected?.id}`, {
+                name
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            alert("Tópico adicionado com sucesso");
+            setTopicName("");
+            location.reload();
+        } catch (err) {
+            console.error("Erro ao adicionar tópico: ", err)
+        }
+    }
+
 
     return (
         <main className="bg-zinc-200/10 min-h-screen">
@@ -243,10 +269,17 @@ export function Goals() {
                                 <div className="mt-6">
                                     <div className="sm:flex sm:items-center sm:justify-between mb-4 sm:flex-row">
                                         <h3 className="font-semibold sm:text-lg text-base">Tópicos Técnicos</h3>
-                                        <button className="sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300">
-                                            <FiPlus className="sm:text-lg text-base" />
-                                            Adicionar Tópico
-                                        </button>
+                                        <div className="flex gap-4">
+                                            <input className="h-10 rounded-lg border-2 border-gray-200 w-full outline-none px-2"
+                                                placeholder="Adicione um tópico"
+                                                type="text"
+                                                value={topicName}
+                                                onChange={(e) => setTopicName(e.target.value)}
+                                            />
+                                            <button onClick={() => addGoalTopic(topicName)} className="sm:mt-0 mt-2 flex items-center gap-2 rounded-full border border-gray-300 px-2.5 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300">
+                                                <FiPlus className="sm:text-lg text-base" />
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {goalSelected.goalsTopcis && goalSelected.goalsTopcis.length > 0 ? (
