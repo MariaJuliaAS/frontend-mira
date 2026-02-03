@@ -9,6 +9,7 @@ import { LuTarget } from "react-icons/lu";
 import { TbTrash } from "react-icons/tb";
 import { BsLightning } from "react-icons/bs";
 import { ConfirmDelete } from "../../components/modals/confirmDelete";
+import { CreateGoalModal } from "../../components/modals/createGoalModal";
 
 export interface GoalsProps {
     id: string;
@@ -30,6 +31,7 @@ export function Goals() {
     const [goalList, setGoalList] = useState<GoalsProps[]>([]);
     const [goalSelected, setGoalSelected] = useState<GoalsProps | null>(null);
     const [modalConfirmDelete, setModalConfirmDelete] = useState<boolean>(false);
+    const [modalCreateGoal, setModalCreateGoal] = useState<boolean>(false);
 
     async function fecthGoals() {
         const token = localStorage.getItem("@tokenMira");
@@ -164,8 +166,8 @@ export function Goals() {
                     </div>
 
                     <Button
-                        type="button"
-                    >
+                        onClick={() => setModalCreateGoal(true)}
+                        type="button">
                         <FiPlus size={18} className="mr-2" />
                         Nova Meta
                     </Button>
@@ -285,7 +287,10 @@ export function Goals() {
                 </div >
 
             </Container >
+
             {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} goal={goalSelected} deleteGoal={deleteGoal} />}
+            {modalCreateGoal && <CreateGoalModal onSuccess={fecthGoals} closeModal={() => setModalCreateGoal(false)} />}
+
         </main >
     )
 }
