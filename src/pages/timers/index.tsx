@@ -24,6 +24,15 @@ export function Timers() {
         { id: 3, topic: "Química", time: "1h 15m", date: "2023-10-03" },
     ];
 
+    function handlePause() {
+        pause();
+        setIsRunning(false);
+
+        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        console.log("Tempo pausado:", totalSeconds, "s");
+    }
+
     return (
         <main className="bg-zinc-200/10 min-h-screen">
             <Container>
@@ -71,8 +80,7 @@ export function Timers() {
                                     type="button"
                                     onClick={() => {
                                         if (isRunning) {
-                                            pause();
-                                            setIsRunning(false);
+                                            handlePause();
                                         } else {
                                             start();
                                             setIsRunning(true);
