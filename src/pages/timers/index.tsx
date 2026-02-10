@@ -33,16 +33,21 @@ interface GoalsProps {
 }
 
 export function Timers() {
-    const { start, pause, reset, seconds, minutes, hours } = useStopwatch({ autoStart: false });
     const [isRunning, setIsRunning] = useState(false);
     const [typeSelected, setTypeSelected] = useState<"Matéria" | "Meta">("Matéria");
     const [typeSelectedId, setTypeSelectedId] = useState<string | null>(null);
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
     const [goalList, setGoalList] = useState<GoalsProps[]>([]);
+
+    const { start, pause, reset, seconds, minutes, hours } = useStopwatch({ autoStart: false });
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
+
+    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    const disabledDetails = !isRunning && totalSeconds > 0;
+    const startTimer = typeSelectedId !== null;
 
     const sessions = [
         { id: 1, topic: "Matemática", time: "1h 30m", date: "2023-10-01" },
@@ -142,8 +147,8 @@ export function Timers() {
                             </div>
 
                             <div className="flex gap-4 mt-8 mb-6">
-                                <button onClick={() => setTypeSelected("Matéria")} className={`${typeSelected === "Matéria" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Matéria</button>
-                                <button onClick={() => setTypeSelected("Meta")} className={`${typeSelected === "Meta" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Meta</button>
+                                <button onClick={() => { setTypeSelected("Matéria"), setTypeSelectedId(null) }} className={`${typeSelected === "Matéria" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Matéria</button>
+                                <button onClick={() => { setTypeSelected("Meta"), setTypeSelectedId(null) }} className={`${typeSelected === "Meta" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Meta</button>
                                 {typeSelected === "Matéria" ? (
                                     <select
                                         className="rounded-lg border-2 border-gray-200 w-full outline-none px-3 py-2 bg-white"
@@ -173,7 +178,9 @@ export function Timers() {
 
                             <div className="flex justify-center gap-2">
                                 <Button
+                                    width={`${startTimer ? '' : 'opacity-50 hover:cursor-default'}`}
                                     type="button"
+                                    disabled={!startTimer}
                                     onClick={() => {
                                         if (isRunning) {
                                             pause();
@@ -264,7 +271,9 @@ export function Timers() {
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Button type="submit">Salvar Sessão</Button>
+                                    <Button width={`${disabledDetails ? '' : 'opacity-50 hover:cursor-default'}`} type="submit" disabled={!disabledDetails}>
+                                        Salvar Sessão
+                                    </Button>
                                     <button
                                         className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-4 py-1 flex justify-center items-center gap-2 bg-zinc-200/10 rounded-md border border-gray-200">
                                         Limpar campos
