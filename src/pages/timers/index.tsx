@@ -43,7 +43,7 @@ interface SessionProps {
     correctQuestions: number;
     video: number;
     revision: boolean;
-    updated_at: string;
+    created_at: string;
     course?: CourseProps;
     goal?: GoalsProps;
 }
@@ -65,12 +65,6 @@ export function Timers() {
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
     const disabledDetails = !isRunning && totalSeconds > 0;
     const startTimer = typeSelectedId !== null;
-
-    const sessions = [
-        { id: 1, topic: "Matemática", time: "1h 30m", date: "2023-10-01" },
-        { id: 2, topic: "Física", time: "2h 00m", date: "2023-10-02" },
-        { id: 3, topic: "Química", time: "1h 15m", date: "2023-10-03" },
-    ];
 
     async function fetchCourses() {
         const token = localStorage.getItem("@tokenMira");
@@ -389,7 +383,7 @@ export function Timers() {
                                             </div>
                                             <div className="text-right">
                                                 <p className="font-semibold text-lg">{secondsToHours(session.time)}</p>
-                                                <p className="text-sm text-gray-500">{format(session.updated_at, "dd 'de' MMM',' hh:mm", { locale: ptBR })}</p>
+                                                <p className="text-sm text-gray-500">{format(session.created_at, "dd 'de' MMM',' hh:mm", { locale: ptBR })}</p>
                                             </div>
                                         </div>
                                     </div>
