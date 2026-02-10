@@ -1,6 +1,6 @@
 import { Container } from "../../components/container";
 import { Button } from "../../components/ui/Button";
-import { FiPlay, FiPause, FiRotateCcw } from "react-icons/fi";
+import { FiPlay, FiPause, FiRotateCcw, FiTrash2 } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { useStopwatch } from "react-timer-hook"
 import { LuBookOpen, LuClock, LuTarget } from "react-icons/lu";
@@ -178,6 +178,7 @@ export function Timers() {
                 })
             }
             alert("Sessão de estudo salva com sucesso!");
+            location.reload();
         } catch (err) {
             console.error("Erro ao criar sessão de estudo: ", err);
         }
@@ -189,6 +190,27 @@ export function Timers() {
         const seconds = totalSeconds % 60;
 
         return `${hours}h${minutes}m${seconds}s`;
+    }
+
+    async function handleDeleteSession(id: string) {
+        const token = localStorage.getItem("@tokenMira");
+
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            await api.delete(`/timer/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            alert("Sessão de estudo deletada!")
+            location.reload();
+        } catch (err) {
+            console.error("Erro ao deletar sessão de estudo: ", err)
+        }
     }
 
     return (
@@ -372,7 +394,10 @@ export function Timers() {
                                                     }
                                                 </div>
                                                 <div>
-                                                    <p><strong>{session.course?.name || session.goal?.name}</strong></p>
+                                                    <p className="flex items-center gap-2 font-medium">
+                                                        {session.course?.name || session.goal?.name}
+                                                        {session.revision ? (<IoReload size={14} className="mt-1" />) : ""}
+                                                    </p>
                                                     <span className="text-gray-500 text-sm">{session.topic}</span>
                                                     <p className="text-gray-500 text-sm flex items-center">
                                                         <CiViewList size={14} className="mr-1" /> {session.pages} páginas
@@ -381,10 +406,24 @@ export function Timers() {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="font-semibold text-lg">{secondsToHours(session.time)}</p>
-                                                <p className="text-sm text-gray-500">{format(session.created_at, "dd 'de' MMM',' hh:mm", { locale: ptBR })}</p>
+                                            <div className="text-right flex flex-col items-end gap-1">
+                                                <p className="font-medium">
+                                                    {secondsToHours(session.time)}
+                                                </p>
+
+                                                <p className="text-sm text-gray-500">
+                                                    {format(session.created_at, "dd 'de' MMM',' HH:mm", { locale: ptBR })}
+                                                </p>
+
+                                                <button
+                                                    onClick={() => handleDeleteSession(session.id)}
+                                                    className="mt-1 flex items-center gap-1 text-xs text-red-600 hover:text-red-700 transition underline cursor-pointer hover:scale-105"
+                                                >
+                                                    <FiTrash2 size={14} />
+                                                    Excluir
+                                                </button>
                                             </div>
+
                                         </div>
                                     </div>
                                 ))}
