@@ -1,22 +1,48 @@
 import { Container } from "../../components/container";
 import { Button } from "../../components/ui/Button";
 import { FiPlay, FiPause, FiRotateCcw } from "react-icons/fi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStopwatch } from "react-timer-hook"
 import { LuBookOpen, LuClock } from "react-icons/lu";
 import { CiCircleQuestion, CiVideoOn, CiViewList } from "react-icons/ci";
 import { IoReload } from "react-icons/io5";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "../../components/ui/Input";
+import { api } from "../../service/api";
+
+const schema = z.object({
+    topic: z.string().min(1, "O tópico é obrigatório"),
+    pages: z.string().optional(),
+    questions: z.string().optional(),
+    correctQuestions: z.string().optional(),
+    video: z.string().optional(),
+    revision: z.boolean().optional(),
+});
+type FormData = z.infer<typeof schema>;
+
+interface CourseProps {
+    id: string;
+    name: string;
+}
+
+interface GoalsProps {
+    id: string;
+    name: string;
+}
 
 export function Timers() {
     const { start, pause, reset, seconds, minutes, hours } = useStopwatch({ autoStart: false });
     const [isRunning, setIsRunning] = useState(false);
-    const [topic, setTopic] = useState("");
-    const [isReview, setIsReview] = useState(false);
-    const [pagesRead, setPagesRead] = useState("");
-    const [videoMinutes, setVideoMinutes] = useState("");
-    const [totalQuestions, setTotalQuestions] = useState("");
-    const [correctQuestions, setCorrectQuestions] = useState("");
     const [typeSelected, setTypeSelected] = useState<"Matéria" | "Meta">("Matéria");
+    const [typeSelectedId, setTypeSelectedId] = useState<string | null>(null);
+    const [courseList, setCourseList] = useState<CourseProps[]>([]);
+    const [goalList, setGoalList] = useState<GoalsProps[]>([]);
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+        resolver: zodResolver(schema),
+        mode: "onChange"
+    })
 
     const sessions = [
         { id: 1, topic: "Matemática", time: "1h 30m", date: "2023-10-01" },
@@ -24,13 +50,67 @@ export function Timers() {
         { id: 3, topic: "Química", time: "1h 15m", date: "2023-10-03" },
     ];
 
-    function handlePause() {
-        pause();
-        setIsRunning(false);
+    async function fetchCourses() {
+        const token = localStorage.getItem("@tokenMira");
 
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            const response = await api.get("/course/all", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            setCourseList(response.data);
+        } catch (err) {
+            console.error("Error fetching courses", err);
+        }
+    }
+
+    async function fecthGoals() {
+        const token = localStorage.getItem("@tokenMira");
+
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            const response = await api.get("/goal", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setGoalList(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar metas: ", error)
+        }
+    }
+
+    useEffect(() => {
+        fetchCourses();
+        fecthGoals();
+    }, [])
+
+    async function onSubmit(data: FormData) {
         const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        const token = localStorage.getItem("@tokenMira");
 
-        console.log("Tempo pausado:", totalSeconds, "s");
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            console.log(data);
+            console.log(totalSeconds);
+        } catch (err) {
+            console.error("Erro ao criar sessão de estudo: ", err);
+        }
     }
 
     return (
@@ -65,12 +145,28 @@ export function Timers() {
                                 <button onClick={() => setTypeSelected("Matéria")} className={`${typeSelected === "Matéria" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Matéria</button>
                                 <button onClick={() => setTypeSelected("Meta")} className={`${typeSelected === "Meta" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Meta</button>
                                 {typeSelected === "Matéria" ? (
-                                    <select className="rounded-lg border-2 border-gray-200 w-full outline-none px-3 py-2 bg-white" >
+                                    <select
+                                        className="rounded-lg border-2 border-gray-200 w-full outline-none px-3 py-2 bg-white"
+                                        onChange={(e) => setTypeSelectedId(e.target.value)}
+                                    >
                                         <option value="">Selecione uma matéria</option>
+                                        {courseList.map((c) => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.name}
+                                            </option>
+                                        ))}
                                     </select>
                                 ) : (
-                                    <select className="rounded-lg border-2 border-gray-200 w-full outline-none px-3 py-2 bg-white" >
+                                    <select
+                                        className="rounded-lg border-2 border-gray-200 w-full outline-none px-3 py-2 bg-white"
+                                        onChange={(e) => setTypeSelectedId(e.target.value)}
+                                    >
                                         <option value="">Selecione uma meta</option>
+                                        {goalList.map((g) => (
+                                            <option key={g.id} value={g.id}>
+                                                {g.name}
+                                            </option>
+                                        ))}
                                     </select>
                                 )}
                             </div>
@@ -80,7 +176,8 @@ export function Timers() {
                                     type="button"
                                     onClick={() => {
                                         if (isRunning) {
-                                            handlePause();
+                                            pause();
+                                            setIsRunning(false);
                                         } else {
                                             start();
                                             setIsRunning(true);
@@ -99,79 +196,81 @@ export function Timers() {
 
                         <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
                             <h2 className="font-semibold text-lg mb-4">Detalhes da Sessão</h2>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Tópico</label>
-                                <input
-                                    className="h-10 rounded-lg border-2 border-gray-200 w-full outline-none px-2"
-                                    type="text"
-                                    placeholder="Tópico estudado"
-                                    value={topic}
-                                    onChange={(e) => setTopic(e.target.value)}
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="flex items-center text-gray-500 text-sm bg-blue-300/20 py-1 px-2 rounded-lg border border-blue-300/30">
-                                    <input
-                                        type="checkbox"
-                                        checked={isReview}
-                                        onChange={(e) => setIsReview(e.target.checked)}
-                                        className="mr-2"
-                                    />
-                                    <IoReload size={14} className="mr-1" />
-                                    Está sessão é uma revisão
-                                </label>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Páginas Lidas</label>
-                                    <input
-                                        className="h-10 rounded-lg border-2 border-gray-200 w-full outline-none px-2"
-                                        type="number"
-                                        placeholder="0"
-                                        value={pagesRead}
-                                        onChange={(e) => setPagesRead(e.target.value)}
+
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Tópico</label>
+                                    <Input
+                                        type="text"
+                                        name="topic"
+                                        placeholder="Ex.: POO"
+                                        register={register}
+                                        error={errors.topic?.message}
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Min de Vídeo Aula</label>
-                                    <input
-                                        className="h-10 rounded-lg border-2 border-gray-200 w-full outline-none px-2"
-                                        type="number"
-                                        placeholder="0"
-                                        value={videoMinutes}
-                                        onChange={(e) => setVideoMinutes(e.target.value)}
-                                    />
+                                <div className="mb-4">
+                                    <label className="flex items-center text-gray-500 text-sm bg-blue-300/20 py-1 px-2 rounded-lg border border-blue-300/30">
+                                        <input
+                                            type="checkbox"
+                                            {...register("revision")}
+                                            className="mr-2"
+                                        />
+                                        <IoReload size={14} className="mr-1" />
+                                        Está sessão é uma revisão
+                                    </label>
                                 </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Total de Questões</label>
-                                    <input
-                                        className="h-10 rounded-lg border-2 border-gray-200 w-full outline-none px-2"
-                                        type="number"
-                                        placeholder="0"
-                                        value={totalQuestions}
-                                        onChange={(e) => setTotalQuestions(e.target.value)}
-                                    />
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Páginas Lidas</label>
+                                        <Input
+                                            type="number"
+                                            name="pages"
+                                            placeholder="0"
+                                            register={register}
+                                            error={errors.pages?.message}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Min de Vídeo Aula</label>
+                                        <Input
+                                            type="number"
+                                            name="video"
+                                            placeholder="0"
+                                            register={register}
+                                            error={errors.video?.message}
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Questões Certas</label>
-                                    <input
-                                        className="h-10 rounded-lg border-2 border-gray-200 w-full outline-none px-2"
-                                        type="number"
-                                        placeholder="0"
-                                        value={correctQuestions}
-                                        onChange={(e) => setCorrectQuestions(e.target.value)}
-                                    />
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Total de Questões</label>
+                                        <Input
+                                            type="number"
+                                            name="questions"
+                                            placeholder="0"
+                                            register={register}
+                                            error={errors.questions?.message}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">Questões Certas</label>
+                                        <Input
+                                            type="number"
+                                            name="correctQuestions"
+                                            placeholder="0"
+                                            register={register}
+                                            error={errors.correctQuestions?.message}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex gap-2">
-                                <Button type="button">Salvar Sessão</Button>
-                                <button
-                                    className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-4 py-1 flex justify-center items-center gap-2 bg-zinc-200/10 rounded-md border border-gray-200">
-                                    Limpar campos
-                                </button>
-                            </div>
+                                <div className="flex gap-2">
+                                    <Button type="submit">Salvar Sessão</Button>
+                                    <button
+                                        className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-4 py-1 flex justify-center items-center gap-2 bg-zinc-200/10 rounded-md border border-gray-200">
+                                        Limpar campos
+                                    </button>
+                                </div>
+                            </form>
                         </section>
                     </div>
 
