@@ -3,7 +3,7 @@ import { Button } from "../../components/ui/Button";
 import { FiPlay, FiPause, FiRotateCcw } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { useStopwatch } from "react-timer-hook"
-import { LuBookOpen, LuClock } from "react-icons/lu";
+import { LuBookOpen, LuClock, LuTarget } from "react-icons/lu";
 import { CiCircleQuestion, CiVideoOn, CiViewList } from "react-icons/ci";
 import { IoReload } from "react-icons/io5";
 import { z } from "zod";
@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../../components/ui/Input";
 import { api } from "../../service/api";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const schema = z.object({
     topic: z.string().min(1, "O tópico é obrigatório"),
@@ -32,12 +34,27 @@ interface GoalsProps {
     name: string;
 }
 
+interface SessionProps {
+    id: string;
+    time: number;
+    topic: string;
+    pages: number;
+    questions: number;
+    correctQuestions: number;
+    video: number;
+    revision: boolean;
+    updated_at: string;
+    course?: CourseProps;
+    goal?: GoalsProps;
+}
+
 export function Timers() {
     const [isRunning, setIsRunning] = useState(false);
     const [typeSelected, setTypeSelected] = useState<"Matéria" | "Meta">("Matéria");
     const [typeSelectedId, setTypeSelectedId] = useState<string | null>(null);
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
     const [goalList, setGoalList] = useState<GoalsProps[]>([]);
+    const [sessionsList, setSessionsList] = useState<SessionProps[]>([]);
 
     const { start, pause, reset, seconds, minutes, hours } = useStopwatch({ autoStart: false });
     const { register, handleSubmit, formState: { errors }, reset: resetForm } = useForm<FormData>({
@@ -96,9 +113,30 @@ export function Timers() {
         }
     }
 
+    async function fetchSessions() {
+        const token = localStorage.getItem("@tokenMira");
+
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            const response = await api.get("/timers", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setSessionsList(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar sessões: ", error)
+        }
+    }
+
     useEffect(() => {
         fetchCourses();
         fecthGoals();
+        fetchSessions();
     }, [])
 
     async function onSubmit(data: FormData) {
@@ -149,6 +187,14 @@ export function Timers() {
         } catch (err) {
             console.error("Erro ao criar sessão de estudo: ", err);
         }
+    }
+
+    function secondsToHours(totalSeconds: number) {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${hours}h${minutes}m${seconds}s`;
     }
 
     return (
@@ -321,26 +367,29 @@ export function Timers() {
                         <div className="w-full">
                             <h2 className="font-semibold text-lg mb-4 px-4">Sessões recentes</h2>
                             <div>
-                                {sessions.map(session => (
+                                {sessionsList.map(session => (
                                     <div key={session.id} className="pb-2 border-y border-gray-200 py-2 w-full">
                                         <div className="flex items-center justify-between px-4 gap-2 w-full">
                                             <div className="flex items-center gap-2">
                                                 <div className="bg-blue-300/30 p-2 rounded-lg">
-                                                    <LuBookOpen size={20} className="text-blue-950" />
+                                                    {session.course != null ?
+                                                        <LuBookOpen size={20} className="text-blue-950" /> :
+                                                        <LuTarget size={20} className="text-blue-950" />
+                                                    }
                                                 </div>
                                                 <div>
-                                                    <p><strong>{session.topic}</strong></p>
-                                                    <span className="text-gray-500 text-sm">Soma</span>
+                                                    <p><strong>{session.course?.name || session.goal?.name}</strong></p>
+                                                    <span className="text-gray-500 text-sm">{session.topic}</span>
                                                     <p className="text-gray-500 text-sm flex items-center">
-                                                        <CiViewList size={14} className="mr-1" /> 15 páginas
-                                                        <CiVideoOn size={14} className="ml-2 mr-1" /> 45 min vídeo
-                                                        <CiCircleQuestion size={14} className="ml-2 mr-1" /> 8/10 questões
+                                                        <CiViewList size={14} className="mr-1" /> {session.pages} páginas
+                                                        <CiVideoOn size={14} className="ml-2 mr-1" /> {session.video} min vídeo
+                                                        <CiCircleQuestion size={14} className="ml-2 mr-1" /> {session.correctQuestions}/{session.questions} questões
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <p className="font-semibold text-lg">{session.time}</p>
-                                                <p className="text-sm text-gray-500">03 de fev.</p>
+                                                <p className="font-semibold text-lg">{secondsToHours(session.time)}</p>
+                                                <p className="text-sm text-gray-500">{format(session.updated_at, "dd 'de' MMM',' hh:mm", { locale: ptBR })}</p>
                                             </div>
                                         </div>
                                     </div>
