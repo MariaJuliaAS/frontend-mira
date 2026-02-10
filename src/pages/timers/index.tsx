@@ -40,7 +40,7 @@ export function Timers() {
     const [goalList, setGoalList] = useState<GoalsProps[]>([]);
 
     const { start, pause, reset, seconds, minutes, hours } = useStopwatch({ autoStart: false });
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors }, reset: resetForm } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
@@ -275,6 +275,7 @@ export function Timers() {
                                         Salvar Sessão
                                     </Button>
                                     <button
+                                        onClick={() => resetForm()}
                                         className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-4 py-1 flex justify-center items-center gap-2 bg-zinc-200/10 rounded-md border border-gray-200">
                                         Limpar campos
                                     </button>
