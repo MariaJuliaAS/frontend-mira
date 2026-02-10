@@ -110,9 +110,42 @@ export function Timers() {
             return;
         }
 
+        const pages = data.pages ? parseInt(data.pages) : 0;
+        const video = data.video ? parseInt(data.video) : 0;
+        const questions = data.questions ? parseInt(data.questions) : 0;
+        const correctQuestions = data.correctQuestions ? parseInt(data.correctQuestions) : 0;
+
         try {
-            console.log(data);
-            console.log(totalSeconds);
+            if (typeSelected === "Matéria") {
+                await api.post(`/timer/courses/${typeSelectedId}`, {
+                    topic: data.topic,
+                    time: totalSeconds,
+                    pages,
+                    video,
+                    questions,
+                    correctQuestions,
+                    revision: data.revision || false
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+            } else {
+                await api.post(`/timer/goals/${typeSelectedId}`, {
+                    topic: data.topic,
+                    time: totalSeconds,
+                    pages,
+                    video,
+                    questions,
+                    correctQuestions,
+                    revision: data.revision || false
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+            }
+            alert("Sessão de estudo salva com sucesso!");
         } catch (err) {
             console.error("Erro ao criar sessão de estudo: ", err);
         }
