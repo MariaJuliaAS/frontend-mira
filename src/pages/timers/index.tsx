@@ -394,10 +394,12 @@ export function Timers() {
                                                     }
                                                 </div>
                                                 <div>
-                                                    <p className="flex items-center gap-2 font-medium">
-                                                        {session.course?.name || session.goal?.name}
-                                                        {session.revision ? (<IoReload size={14} className="mt-1" />) : ""}
-                                                    </p>
+                                                    <div className="flex gap-2 items-center">
+                                                        <p className="flex items-center gap-2 font-medium">
+                                                            {session.course?.name || session.goal?.name}
+                                                        </p>
+                                                        {session.revision ? (<span className="bg-blue-300/20 text-gray-500 rounded-xl px-2 py-1 flex items-center text-sm gap-1"><IoReload size={14} /> Revisão</span>) : ""}
+                                                    </div>
                                                     <span className="text-gray-500 text-sm">{session.topic}</span>
                                                     <p className="text-gray-500 text-sm flex items-center">
                                                         <CiViewList size={14} className="mr-1" /> {session.pages} páginas
