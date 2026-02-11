@@ -8,6 +8,7 @@ import { Login } from "../pages/login";
 import { Register } from "../pages/register";
 import { Layout } from "../components/layout";
 import { PrivateRoutes } from "./privateRoutes";
+import { Profile } from "../pages/profile";
 
 export const router = createBrowserRouter([
     {
@@ -56,6 +57,13 @@ export const router = createBrowserRouter([
                     </PrivateRoutes>,
                 path: "/goals"
             },
+            {
+                element:
+                    <PrivateRoutes>
+                        <Profile />
+                    </PrivateRoutes>,
+                path: "/profile"
+            }
         ]
     }
 ])
