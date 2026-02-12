@@ -9,7 +9,6 @@ import { Input } from "../../components/ui/Input";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { da } from "date-fns/locale";
 
 interface UserDetailProps {
     id: string;
