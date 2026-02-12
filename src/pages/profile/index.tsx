@@ -119,21 +119,30 @@ export function Profile() {
                                 <LuBookOpen size={22} className="text-zinc-800" />
                                 <p className="flex flex-col" >
                                     Curso
-                                    <span className="font-semibold">{userDetail?.profiles?.program}</span>
+                                    {userDetail?.profiles?.program ? (
+                                        <span className="font-semibold">{userDetail?.profiles?.program}</span>
+                                    ) : (
+                                        <span className="text-zinc-500 text-sm">Clique em editar e adicine seu curso.</span>)}
                                 </p>
                             </div>
                             <div className="bg-zinc-300/10 rounded-xl px-4 py-2 flex items-center gap-2">
                                 <LuCalendar size={22} className="text-zinc-800" />
                                 <p className="flex flex-col" >
                                     Período
-                                    <span className="font-semibold">{userDetail?.profiles?.period}° Período</span>
+                                    {userDetail?.profiles?.period ? (
+                                        <span className="font-semibold">{userDetail?.profiles?.period}° Período</span>
+                                    ) : (
+                                        <span className="text-zinc-500 text-sm">Clique em editar e adicine seu período.</span>)}
                                 </p>
                             </div>
                             <div className="bg-zinc-300/10 rounded-xl px-4 py-2 flex items-center gap-2">
                                 <FaRegBuilding size={22} className="text-zinc-800" />
                                 <p className="flex flex-col" >
                                     Universidade
-                                    <span className="font-semibold">{userDetail?.profiles?.university}</span>
+                                    {userDetail?.profiles?.university ? (
+                                        <span className="font-semibold">{userDetail?.profiles?.university}</span>
+                                    ) :
+                                        (<span className="text-zinc-500 text-sm">Clique em editar e adicine sua universidade.</span>)}
                                 </p>
                             </div>
                         </div>
