@@ -9,6 +9,7 @@ import { Register } from "../pages/register";
 import { Layout } from "../components/layout";
 import { PrivateRoutes } from "./privateRoutes";
 import { Profile } from "../pages/profile";
+import { CalendarProvider } from "../pages/calendar/context/calendarContext";
 
 export const router = createBrowserRouter([
     {
@@ -32,7 +33,9 @@ export const router = createBrowserRouter([
             {
                 element:
                     <PrivateRoutes>
-                        <Calendar />
+                        <CalendarProvider>
+                            <Calendar />
+                        </CalendarProvider>
                     </PrivateRoutes>,
                 path: "/calendar"
             },

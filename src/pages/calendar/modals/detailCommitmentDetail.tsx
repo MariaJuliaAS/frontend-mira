@@ -1,52 +1,13 @@
 import { LuBookOpen, LuCalendar, LuFileText } from "react-icons/lu";
 import { MdOutlineClose } from "react-icons/md";
-import { api } from "../../service/api";
+import type { CommitmentsProps } from "../types/calendarTypes";
 
 interface ModalProps {
     closeModal: () => void;
-    onSuccess: () => void;
     commitment?: CommitmentsProps;
 }
 
-interface CommitmentsProps {
-    id: string;
-    name: string;
-    date: string;
-    type: "Prova" | "Trabalho" | "Atividade" | "Evento" | "Outro";
-    description?: string;
-    course?: CourseProps;
-}
-
-interface CourseProps {
-    id: string;
-    name: string;
-    teacher?: string;
-}
-
-export function DetailCommitmentModal({ closeModal, commitment, onSuccess }: ModalProps) {
-
-    async function deleteCommitment(id: string) {
-        const token = localStorage.getItem("@tokenMira");
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            await api.delete(`/commitment/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            alert("Compromisso deletado com sucesso");
-        } catch (error) {
-            console.error("Erro ao deletar compromisso:", error);
-        } finally {
-            closeModal();
-            onSuccess();
-        }
-    }
+export function DetailCommitmentModal({ closeModal, commitment }: ModalProps) {
 
     return (
         <div
@@ -109,13 +70,6 @@ export function DetailCommitmentModal({ closeModal, commitment, onSuccess }: Mod
                 </section>
 
                 <footer className="mt-6 flex justify-end gap-3">
-                    <button
-                        onClick={() => deleteCommitment(commitment!.id)}
-                        className="cursor-pointer transition-all duration-300 hover:scale-105 text-white bg-red-600 px-4 py-1 flex justify-center items-center gap-2 rounded-md border border-gray-200"
-                    >
-                        Excluir
-                    </button>
-
                     <button
                         onClick={closeModal}
                         className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-4 py-1 flex justify-center items-center gap-2 bg-zinc-200/10 rounded-md border border-gray-200"

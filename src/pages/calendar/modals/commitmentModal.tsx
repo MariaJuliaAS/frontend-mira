@@ -1,22 +1,12 @@
 import { MdOutlineClose } from "react-icons/md";
-import { Input } from "../ui/Input";
+import { Input } from "../../../components/ui/Input";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { api } from "../../service/api";
-import { Button } from "../ui/Button";
-import { LuLoader } from "react-icons/lu";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-
-const CommitmentType = {
-    PROVA: "PROVA",
-    TRABALHO: "TRABALHO",
-    EVENTO: "EVENTO",
-    ATIVIDADE: "ATIVIDADE",
-    OUTRO: "OUTRO",
-}
+import { api } from "../../../service/api";
+import { Button } from "../../../components/ui/Button";
+import { CommitmentType } from "../constants/commitmentTypes";
 
 const COMMITMENT_TYPE_OPTIONS = Object.entries(CommitmentType).map(([key, value]) => ({
     label: key.charAt(0) + key.slice(1).toLowerCase(),
@@ -25,7 +15,7 @@ const COMMITMENT_TYPE_OPTIONS = Object.entries(CommitmentType).map(([key, value]
 
 interface ModalProps {
     closeModal: () => void;
-    onSuccess: () => void;
+    createCommitment: (data: FormData) => void;
 }
 
 interface CourseProps {
@@ -40,14 +30,13 @@ const schema = z.object({
     course_id: z.string().optional(),
     description: z.string().optional()
 })
-type FormData = z.infer<typeof schema>;
+export type FormData = z.infer<typeof schema>;
 
-export function CommitmentModal({ closeModal, onSuccess }: ModalProps) {
+export function CommitmentModal({ closeModal, createCommitment }: ModalProps) {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
-    const [loading, setLoading] = useState(false);
     const [courseList, setCourseList] = useState<CourseProps[]>([]);
 
     async function fetchCourses() {
@@ -76,37 +65,8 @@ export function CommitmentModal({ closeModal, onSuccess }: ModalProps) {
     }, [])
 
     async function onSubmit(data: FormData) {
-        const token = localStorage.getItem("@tokenMira");
-        setLoading(true);
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            const date = format(data.date + "T00:00:00", "dd/MM/yyyy", { locale: ptBR })
-
-            await api.post("/commitment",
-                {
-                    name: data.name,
-                    date,
-                    type: data.type,
-                    description: data.description,
-                    course_id: data.course_id
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-        } catch (err) {
-            console.error("Error fetching courses", err);
-        } finally {
-            setLoading(false);
-            closeModal();
-            onSuccess();
-        }
+        await createCommitment(data);
+        closeModal();
     }
 
     return (
@@ -134,7 +94,7 @@ export function CommitmentModal({ closeModal, onSuccess }: ModalProps) {
                         type="date"
                         name="date"
                         register={register}
-                        error={errors.name?.message}
+                        error={errors.date?.message}
                     />
                     <label className="text-black font-medium mt-4 mb-1 sm:text-base text-sm">Tipo</label>
                     <select
@@ -173,10 +133,8 @@ export function CommitmentModal({ closeModal, onSuccess }: ModalProps) {
                         <button onClick={closeModal} className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 flex w-full justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
                             Cancelar
                         </button>
-                        <Button disabled={loading} type="submit" width="w-full">
-                            {loading ? (
-                                <LuLoader size={18} className="animate-spin" />
-                            ) : "Criar compromisso"}
+                        <Button type="submit" width="w-full">
+                            Criar compromisso
                         </Button>
                     </div>
                 </form>
