@@ -4,20 +4,19 @@ import { useCalendar } from "../context/calendarContext";
 import { ptBR } from "date-fns/locale";
 import { COMMITMENT_TYPES } from "../constants/commitmentTypes";
 import { TbTrash } from "react-icons/tb";
-import { useEffect, useMemo, useState } from "react";
-import { DetailCommitmentModal } from "../modals/detailCommitmentDetail";
+import { useEffect, useMemo } from "react";
 import type { CommitmentsProps } from "../types/calendarTypes";
 
 interface Props {
     commitments: CommitmentsProps[];
     onDelete: (id: string) => void;
+    onDetail: () => void;
     refresh?: () => void;
 }
 
 
-export function CommitmentCard({ commitments, onDelete, refresh }: Props) {
-    const [detailModalIsOpen, setDetailModalIsOpen] = useState<Boolean>(false);
-    const { selectedDate, setCommitmentSelected, commitmentSelected } = useCalendar();
+export function CommitmentCard({ commitments, onDelete, refresh, onDetail }: Props) {
+    const { selectedDate, setCommitmentSelected } = useCalendar();
 
     const today = new Date();
 
@@ -50,7 +49,7 @@ export function CommitmentCard({ commitments, onDelete, refresh }: Props) {
                 return (
                     <div key={c.id} className="flex gap-2">
                         <div
-                            onClick={() => { setDetailModalIsOpen(true), setCommitmentSelected(c) }}
+                            onClick={() => { onDetail(), setCommitmentSelected(c) }}
                             className={`cursor-pointer w-full flex items-center justify-between gap-4 px-4 py-2 rounded-xl mb-3 ${typeConfig?.colors.bg} ring-1 ${typeConfig?.colors.ring} my-4 transition-all duration-300 hover:scale-105`}>
                             <div className="flex flex-col">
                                 <p className="font-semibold" >{c.name}</p>
@@ -66,7 +65,6 @@ export function CommitmentCard({ commitments, onDelete, refresh }: Props) {
                     </div>
                 )
             })}
-            {detailModalIsOpen && <DetailCommitmentModal closeModal={() => setDetailModalIsOpen(false)} commitment={commitmentSelected} />}
         </>
     )
 

@@ -9,10 +9,14 @@ import { CalendarGrid } from "./components/calendarGrid";
 import { useCommitment } from "./hooks/useCommitment";
 import { CommitmentCard } from "./components/commitmentCard";
 import { HeaderPages } from "../../components/ui/HeaderPages";
+import { DetailCommitmentModal } from "./modals/detailCommitmentDetail";
+import { useCalendar } from "./context/calendarContext";
 
 export function Calendar() {
     const [createModalIsOpen, setCreateModalIsOpen] = useState<boolean>(false);
+    const [detailModalIsOpen, setDetailModalIsOpen] = useState<Boolean>(false);
     const { commitments, deleteCommitment, refresh, createCommitment } = useCommitment();
+    const { commitmentSelected } = useCalendar();
 
     return (
         <main className="bg-zinc-200/10 min-h-screen">
@@ -40,11 +44,19 @@ export function Calendar() {
                     </section>
 
                     <section className="rounded-2xl border border-gray-200 p-6 shadow-lg flex-1">
-                        <CommitmentCard commitments={commitments} onDelete={deleteCommitment} refresh={refresh} />
+                        <CommitmentCard
+                            commitments={commitments}
+                            onDelete={deleteCommitment}
+                            refresh={refresh}
+                            onDetail={() => {
+                                setDetailModalIsOpen(true)
+                            }}
+                        />
                     </section>
                 </div>
             </Container>
 
+            {detailModalIsOpen && <DetailCommitmentModal closeModal={() => setDetailModalIsOpen(false)} commitment={commitmentSelected} />}
             {createModalIsOpen && <CommitmentModal closeModal={() => setCreateModalIsOpen(false)} createCommitment={createCommitment} />}
         </main>
     )
