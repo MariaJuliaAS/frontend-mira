@@ -1,26 +1,18 @@
 import { MdOutlineClose } from "react-icons/md";
-import { Input } from "../ui/Input";
+import { Input } from "../../../components/ui/Input";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "../ui/Button";
+import { Button } from "../../../components/ui/Button";
 import { LuLoader } from "react-icons/lu";
 import { useEffect, useState } from "react";
-import { api } from "../../service/api";
-
-type CourseModalModel = "create" | "edit";
+import type { CourseModalModel, CourseProps } from "../types/courseTypes";
+import { useCourse } from "../hooks/useCourse";
 
 interface ModalProps {
     closeModal: () => void;
-    onSuccess: () => void;
     mode: CourseModalModel;
     course?: CourseProps | null;
-}
-
-interface CourseProps {
-    id: string;
-    name: string;
-    teacher?: string;
 }
 
 const schema = z.object({
@@ -29,13 +21,12 @@ const schema = z.object({
 })
 type FormData = z.infer<typeof schema>;
 
-export function CourseModal({ closeModal, mode, onSuccess, course }: ModalProps) {
-    const token = localStorage.getItem("@tokenMira");
-
+export function CourseModal({ closeModal, mode, course }: ModalProps) {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
+    const { createCourse, editCourse } = useCourse();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -55,44 +46,15 @@ export function CourseModal({ closeModal, mode, onSuccess, course }: ModalProps)
     async function onSubmit(data: FormData) {
         setLoading(true)
 
-        try {
-
-            if (mode == "create") {
-                await api.post("/course",
-                    {
-                        name: data.name,
-                        teacher: data.teacher
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                )
-                alert("Matéria criada com sucesso!")
-            }
-
-            if (mode == "edit" && course) {
-                await api.put(`/course/${course.id}`, {
-                    name: data.name,
-                    teacher: data.teacher
-                },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                alert("Matéria editada com sucesso!")
-            }
-
-            onSuccess();
-            closeModal();
-        } catch (err) {
-            console.log("Error ao criar/editar matéria: ", err)
-        } finally {
-            setLoading(false)
+        if (mode == "create") {
+            createCourse(data);
         }
 
+        if (mode == "edit" && course) {
+            editCourse(data, course.id);
+        }
+
+        closeModal();
     }
 
     return (
