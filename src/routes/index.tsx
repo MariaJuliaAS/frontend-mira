@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Dashboard } from "../pages/dashboard";
 import { Calendar } from "../pages/calendar";
 import { Courses } from "../pages/courses";
-import { Timers } from "../pages/timers";
+import { Timers } from "../pages/timer";
 import { Goals } from "../pages/goals";
 import { Login } from "../pages/login";
 import { Register } from "../pages/register";

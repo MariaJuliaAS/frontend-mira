@@ -216,37 +216,37 @@ export function Timers() {
     return (
         <main className="bg-zinc-200/10 min-h-screen">
             <Container>
-                <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <header className="flex flex-col gap-2 sm:gap-4 sm:flex-row sm:items-center sm:justify-between px-2 sm:px-0">
                     <div>
-                        <h1 className="font-bold text-2xl sm:text-3xl">Acompanhamento de Estudos</h1>
-                        <span className="text-zinc-500 text-sm sm:text-base">
+                        <h1 className="font-bold text-xl sm:text-2xl md:text-3xl">Acompanhamento de Estudos</h1>
+                        <span className="text-zinc-500 text-xs sm:text-sm md:text-base">
                             Registre suas sessões e acompanhe seu tempo de estudo
                         </span>
                     </div>
                 </header>
 
-                <div className="w-full min-h-full mt-8 sm:mt-12 flex flex-row lg:gap-8 gap-6">
+                <div className="w-full min-h-full mt-6 sm:mt-8 md:mt-12 flex flex-col lg:flex-row lg:gap-8 gap-4 px-2 sm:px-0">
                     <div className="flex flex-col flex-1 gap-4">
-                        <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
+                        <section className="bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
                             <div className="flex items-center gap-2">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold">
-                                    <LuClock size={24} className="text-blue-950" />
+                                <div className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold shrink-0">
+                                    <LuClock size={18} className="sm:w-6 sm:h-6 text-blue-950" />
                                 </div>
-                                <h2 className="font-semibold text-lg">Cronômetro</h2>
+                                <h2 className="font-semibold text-base sm:text-lg">Cronômetro</h2>
                             </div>
 
-                            <div className="text-center mt-8 bg-blue-300/30 rounded-full h-24 flex items-center justify-center">
-                                <h3 className="text-6xl font-bold text-blue-950">{String(hours).padStart(2, "0")}:
+                            <div className="text-center mt-6 sm:mt-8 bg-blue-300/30 rounded-full h-20 sm:h-24 md:h-28 flex items-center justify-center">
+                                <h3 className="text-4xl sm:text-5xl md:text-6xl font-bold text-blue-950">{String(hours).padStart(2, "0")}:
                                     {String(minutes).padStart(2, "0")}:
                                     {String(seconds).padStart(2, "0")}</h3>
                             </div>
 
-                            <div className="flex gap-4 mt-8 mb-6">
-                                <button onClick={() => { setTypeSelected("Matéria"), setTypeSelectedId(null) }} className={`${typeSelected === "Matéria" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Matéria</button>
-                                <button onClick={() => { setTypeSelected("Meta"), setTypeSelectedId(null) }} className={`${typeSelected === "Meta" ? "bg-blue-950 text-white" : ""} sm:mt-0 mt-2 flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Meta</button>
+                            <div className="flex flex-col sm:flex-row gap-2 mt-6 sm:mt-8 mb-4 sm:mb-6">
+                                <button onClick={() => { setTypeSelected("Matéria"), setTypeSelectedId(null) }} className={`${typeSelected === "Matéria" ? "bg-blue-950 text-white" : ""} w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-3 sm:px-4 py-2 sm:py-1.5 text-xs sm:text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Matéria</button>
+                                <button onClick={() => { setTypeSelected("Meta"), setTypeSelectedId(null) }} className={`${typeSelected === "Meta" ? "bg-blue-950 text-white" : ""} w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-3 sm:px-4 py-2 sm:py-1.5 text-xs sm:text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300`}>Meta</button>
                                 {typeSelected === "Matéria" ? (
                                     <select
-                                        className="rounded-lg border-2 border-gray-200 w-full outline-none px-3 py-2 bg-white"
+                                        className="rounded-lg border-2 border-gray-200 w-full sm:flex-1 outline-none px-2 sm:px-3 py-2 bg-white text-xs sm:text-sm"
                                         onChange={(e) => setTypeSelectedId(e.target.value)}
                                     >
                                         <option value="">Selecione uma matéria</option>
@@ -258,7 +258,7 @@ export function Timers() {
                                     </select>
                                 ) : (
                                     <select
-                                        className="rounded-lg border-2 border-gray-200 w-full outline-none px-3 py-2 bg-white"
+                                        className="rounded-lg border-2 border-gray-200 w-full sm:flex-1 outline-none px-2 sm:px-3 py-2 bg-white text-xs sm:text-sm"
                                         onChange={(e) => setTypeSelectedId(e.target.value)}
                                     >
                                         <option value="">Selecione uma meta</option>
@@ -271,9 +271,9 @@ export function Timers() {
                                 )}
                             </div>
 
-                            <div className="flex justify-center gap-2">
+                            <div className="flex flex-col sm:flex-row justify-center gap-2">
                                 <Button
-                                    width={`${startTimer ? '' : 'opacity-50 hover:cursor-default'}`}
+                                    width={`w-full sm:w-auto ${startTimer ? '' : 'opacity-50 hover:cursor-default'}`}
                                     type="button"
                                     disabled={!startTimer}
                                     onClick={() => {
@@ -286,22 +286,22 @@ export function Timers() {
                                         }
                                     }}
                                 >
-                                    {isRunning ? <FiPause size={18} className="mr-2" /> : <FiPlay size={18} className="mr-2" />}
+                                    {isRunning ? <FiPause size={16} className="mr-1 sm:mr-2" /> : <FiPlay size={16} className="mr-1 sm:mr-2" />}
                                     {isRunning ? "Pausar" : "Iniciar"}
                                 </Button>
-                                <Button type="button" onClick={() => { reset(new Date(0), false); setIsRunning(false); }}>
-                                    <FiRotateCcw size={18} className="mr-2" />
+                                <Button type="button" width="w-full sm:w-auto" onClick={() => { reset(new Date(0), false); setIsRunning(false); }}>
+                                    <FiRotateCcw size={16} className="mr-1 sm:mr-2" />
                                     Limpar
                                 </Button>
                             </div>
                         </section>
 
-                        <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
-                            <h2 className="font-semibold text-lg mb-4">Detalhes da Sessão</h2>
+                        <section className="bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                            <h2 className="font-semibold text-base sm:text-lg mb-4">Detalhes da Sessão</h2>
 
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="mb-4">
-                                    <label className="block text-sm font-medium mb-1">Tópico</label>
+                                    <label className="block text-xs sm:text-sm font-medium mb-1">Tópico</label>
                                     <Input
                                         type="text"
                                         name="topic"
@@ -311,19 +311,19 @@ export function Timers() {
                                     />
                                 </div>
                                 <div className="mb-4">
-                                    <label className="flex items-center text-gray-500 text-sm bg-blue-300/20 py-1 px-2 rounded-lg border border-blue-300/30">
+                                    <label className="flex items-center text-gray-500 text-xs sm:text-sm bg-blue-300/20 py-1 px-2 rounded-lg border border-blue-300/30 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             {...register("revision")}
-                                            className="mr-2"
+                                            className="mr-2 cursor-pointer"
                                         />
-                                        <IoReload size={14} className="mr-1" />
-                                        Está sessão é uma revisão
+                                        <IoReload size={12} className="mr-1 shrink-0" />
+                                        <span className="whitespace-nowrap">Esta sessão é uma revisão</span>
                                     </label>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4">
                                     <div>
-                                        <label className="block text-sm font-medium mb-1">Páginas Lidas</label>
+                                        <label className="block text-xs sm:text-sm font-medium mb-1">Páginas Lidas</label>
                                         <Input
                                             type="number"
                                             name="pages"
@@ -333,7 +333,7 @@ export function Timers() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium mb-1">Min de Vídeo Aula</label>
+                                        <label className="block text-xs sm:text-sm font-medium mb-1">Min de Vídeo</label>
                                         <Input
                                             type="number"
                                             name="video"
@@ -343,9 +343,9 @@ export function Timers() {
                                         />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4">
                                     <div>
-                                        <label className="block text-sm font-medium mb-1">Total de Questões</label>
+                                        <label className="block text-xs sm:text-sm font-medium mb-1">Total de Questões</label>
                                         <Input
                                             type="number"
                                             name="questions"
@@ -355,7 +355,7 @@ export function Timers() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium mb-1">Questões Certas</label>
+                                        <label className="block text-xs sm:text-sm font-medium mb-1">Questões Certas</label>
                                         <Input
                                             type="number"
                                             name="correctQuestions"
@@ -365,13 +365,13 @@ export function Timers() {
                                         />
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
-                                    <Button width={`${disabledDetails ? '' : 'opacity-50 hover:cursor-default'}`} type="submit" disabled={!disabledDetails}>
-                                        Salvar Sessão
+                                <div className="flex flex-col sm:flex-row gap-2">
+                                    <Button width={`flex-1 ${disabledDetails ? '' : 'opacity-50 hover:cursor-default'}`} type="submit" disabled={!disabledDetails}>
+                                        <span className="py-1">Salvar Sessão</span>
                                     </Button>
                                     <button
                                         onClick={() => resetForm()}
-                                        className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-4 py-1 flex justify-center items-center gap-2 bg-zinc-200/10 rounded-md border border-gray-200">
+                                        className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-3 sm:px-4 py-1 sm:py-2 flex justify-center items-center gap-1 sm:gap-2 bg-zinc-200/10 rounded-md border border-gray-200 text-xs sm:text-sm">
                                         Limpar campos
                                     </button>
                                 </div>
@@ -379,56 +379,60 @@ export function Timers() {
                         </section>
                     </div>
 
-                    <section className="flex flex-1 bg-white border border-gray-200 rounded-2xl py-6 shadow-lg">
+                    <section className="flex flex-1 bg-white border border-gray-200 rounded-xl sm:rounded-2xl py-4 sm:py-6 shadow-lg min-h-max">
                         <div className="w-full">
-                            <h2 className="font-semibold text-lg mb-4 px-4">Sessões recentes</h2>
-                            <div>
-                                {sessionsList.map(session => (
-                                    <div key={session.id} className="pb-2 border-y border-gray-200 py-2 w-full">
-                                        <div className="flex items-center justify-between px-4 gap-2 w-full">
-                                            <div className="flex items-center gap-2">
-                                                <div className="bg-blue-300/30 p-2 rounded-lg">
-                                                    {session.course != null ?
-                                                        <LuBookOpen size={20} className="text-blue-950" /> :
-                                                        <LuTarget size={20} className="text-blue-950" />
-                                                    }
-                                                </div>
-                                                <div>
-                                                    <div className="flex gap-2 items-center">
-                                                        <p className="flex items-center gap-2 font-medium">
-                                                            {session.course?.name || session.goal?.name}
-                                                        </p>
-                                                        {session.revision ? (<span className="bg-blue-300/20 text-gray-500 rounded-xl px-2 py-1 flex items-center text-sm gap-1"><IoReload size={14} /> Revisão</span>) : ""}
+                            <h2 className="font-semibold text-base sm:text-lg mb-4 px-4">Sessões recentes</h2>
+                            <div className="max-h-96 sm:max-h-none overflow-y-auto">
+                                {sessionsList.length === 0 ? (
+                                    <p className="text-center text-gray-500 py-8 px-4 text-sm">Nenhuma sessão registrada ainda</p>
+                                ) : (
+                                    sessionsList.map(session => (
+                                        <div key={session.id} className="pb-2 border-y border-gray-200 py-3 sm:py-4 w-full">
+                                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-3 sm:px-4 gap-3 sm:gap-4 w-full">
+                                                <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                                                    <div className="bg-blue-300/30 p-1.5 sm:p-2 rounded-lg shrink-0">
+                                                        {session.course != null ?
+                                                            <LuBookOpen size={16} className="sm:w-5 sm:h-5 text-blue-950" /> :
+                                                            <LuTarget size={16} className="sm:w-5 sm:h-5 text-blue-950" />
+                                                        }
                                                     </div>
-                                                    <span className="text-gray-500 text-sm">{session.topic}</span>
-                                                    <p className="text-gray-500 text-sm flex items-center">
-                                                        <CiViewList size={14} className="mr-1" /> {session.pages} páginas
-                                                        <CiVideoOn size={14} className="ml-2 mr-1" /> {session.video} min vídeo
-                                                        <CiCircleQuestion size={14} className="ml-2 mr-1" /> {session.correctQuestions}/{session.questions} questões
-                                                    </p>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex flex-wrap gap-2 sm:gap-2 items-center">
+                                                            <p className="font-medium text-xs sm:text-sm truncate">
+                                                                {session.course?.name || session.goal?.name}
+                                                            </p>
+                                                            {session.revision ? (<span className="bg-blue-300/20 text-gray-500 rounded-xl px-1.5 sm:px-2 py-0.5 flex items-center text-xs gap-0.5 shrink-0"><IoReload size={10} className="sm:w-3.5 sm:h-3.5" /> <span className="hidden sm:inline">Revisão</span></span>) : ""}
+                                                        </div>
+                                                        <span className="text-gray-500 text-xs block truncate mt-1">{session.topic}</span>
+                                                        <p className="text-gray-500 text-xs flex items-center flex-wrap gap-2 mt-1.5 sm:mt-2">
+                                                            <CiViewList size={12} className="shrink-0" /> <span className="truncate">{session.pages}p</span>
+                                                            <CiVideoOn size={12} className="shrink-0" /> <span className="truncate">{session.video}m</span>
+                                                            <CiCircleQuestion size={12} className="shrink-0" /> <span className="truncate">{session.correctQuestions}/{session.questions}q</span>
+                                                        </p>
+                                                    </div>
                                                 </div>
+                                                <div className="text-right flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1 shrink-0">
+                                                    <p className="font-medium text-xs sm:text-sm">
+                                                        {secondsToHours(session.time)}
+                                                    </p>
+
+                                                    <p className="text-xs text-gray-500 whitespace-nowrap">
+                                                        {format(session.created_at, "dd'/'MM", { locale: ptBR })}
+                                                    </p>
+
+                                                    <button
+                                                        onClick={() => handleDeleteSession(session.id)}
+                                                        className="mt-0.5 sm:mt-1 flex items-center gap-0.5 text-xs text-red-600 hover:text-red-700 transition underline cursor-pointer hover:scale-105"
+                                                    >
+                                                        <FiTrash2 size={12} className="shrink-0" />
+                                                        <span className="hidden sm:inline">Excluir</span>
+                                                    </button>
+                                                </div>
+
                                             </div>
-                                            <div className="text-right flex flex-col items-end gap-1">
-                                                <p className="font-medium">
-                                                    {secondsToHours(session.time)}
-                                                </p>
-
-                                                <p className="text-sm text-gray-500">
-                                                    {format(session.created_at, "dd 'de' MMM',' HH:mm", { locale: ptBR })}
-                                                </p>
-
-                                                <button
-                                                    onClick={() => handleDeleteSession(session.id)}
-                                                    className="mt-1 flex items-center gap-1 text-xs text-red-600 hover:text-red-700 transition underline cursor-pointer hover:scale-105"
-                                                >
-                                                    <FiTrash2 size={14} />
-                                                    Excluir
-                                                </button>
-                                            </div>
-
                                         </div>
-                                    </div>
-                                ))}
+                                    ))
+                                )}
                             </div>
                         </div>
                     </section>
