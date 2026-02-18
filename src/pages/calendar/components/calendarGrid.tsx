@@ -1,15 +1,16 @@
 import { eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, parse, startOfMonth, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useCalendar } from "../context/calendarContext";
 import { COMMITMENT_TYPES } from "../constants/commitmentTypes";
 import type { CommitmentsProps } from "../types/calendarTypes";
 
 interface Props {
     commitments: CommitmentsProps[];
+    currentDate: Date;
+    setSelectedDate: (date: Date) => void;
+    selectedDate: Date;
 }
 
-export function CalendarGrid({ commitments }: Props) {
-    const { currentDate, setSelectedDate, selectedDate } = useCalendar();
+export function CalendarGrid({ commitments, currentDate, setSelectedDate, selectedDate }: Props) {
 
     function getMonthDays(date: Date) {
         const start = startOfWeek(startOfMonth(date), { locale: ptBR });

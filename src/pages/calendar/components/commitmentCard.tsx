@@ -1,6 +1,5 @@
 import { LuCalendar } from "react-icons/lu";
 import { format, isSameDay, parse } from "date-fns";
-import { useCalendar } from "../context/calendarContext";
 import { ptBR } from "date-fns/locale";
 import { COMMITMENT_TYPES } from "../constants/commitmentTypes";
 import { TbTrash } from "react-icons/tb";
@@ -12,11 +11,12 @@ interface Props {
     onDelete: (id: string) => void;
     onDetail: () => void;
     refresh?: () => void;
+    selectedDate: Date;
+    setCommitmentSelected: (commitment: CommitmentsProps) => void;
 }
 
 
-export function CommitmentCard({ commitments, onDelete, refresh, onDetail }: Props) {
-    const { selectedDate, setCommitmentSelected } = useCalendar();
+export function CommitmentCard({ commitments, onDelete, refresh, onDetail, selectedDate, setCommitmentSelected }: Props) {
 
     const today = new Date();
 

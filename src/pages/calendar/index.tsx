@@ -16,7 +16,7 @@ export function Calendar() {
     const [createModalIsOpen, setCreateModalIsOpen] = useState<boolean>(false);
     const [detailModalIsOpen, setDetailModalIsOpen] = useState<Boolean>(false);
     const { commitments, deleteCommitment, refresh, createCommitment } = useCommitment();
-    const { commitmentSelected } = useCalendar();
+    const { commitmentSelected, selectedDate, setCommitmentSelected, currentDate, setCurrentDate, setSelectedDate } = useCalendar();
 
     return (
         <main className="bg-zinc-200/10 min-h-screen">
@@ -39,8 +39,17 @@ export function Calendar() {
 
                 <div className="flex w-full gap-8 mb-6 lg:flex-row flex-col">
                     <section className="flex-3 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg">
-                        <CalendarHeader />
-                        <CalendarGrid commitments={commitments} />
+                        <CalendarHeader
+                            currentDate={currentDate}
+                            setCurrentDate={setCurrentDate}
+                            setSelectedDate={setSelectedDate}
+                        />
+                        <CalendarGrid
+                            commitments={commitments}
+                            currentDate={currentDate}
+                            setSelectedDate={setSelectedDate}
+                            selectedDate={selectedDate}
+                        />
                     </section>
 
                     <section className="rounded-2xl border border-gray-200 p-6 shadow-lg flex-1">
@@ -48,6 +57,8 @@ export function Calendar() {
                             commitments={commitments}
                             onDelete={deleteCommitment}
                             refresh={refresh}
+                            selectedDate={selectedDate}
+                            setCommitmentSelected={setCommitmentSelected}
                             onDetail={() => {
                                 setDetailModalIsOpen(true)
                             }}

@@ -1,11 +1,15 @@
 import { format } from "date-fns";
-import { useCalendar } from "../context/calendarContext";
 import { ptBR } from "date-fns/locale";
 import { LuCalendar } from "react-icons/lu";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-export function CalendarHeader() {
-    const { currentDate, setCurrentDate, setSelectedDate } = useCalendar();
+interface CalendarHeaderProps {
+    currentDate: Date;
+    setCurrentDate: (date: Date) => void;
+    setSelectedDate: (date: Date) => void;
+}
+
+export function CalendarHeader({ currentDate, setCurrentDate, setSelectedDate }: CalendarHeaderProps) {
     const monthLabel = format(currentDate, "MMMM yyyy", { locale: ptBR });
 
     function prevMonth() {
