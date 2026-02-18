@@ -1,329 +1,118 @@
 import { FiPlus } from "react-icons/fi";
 import { Container } from "../../components/container";
 import { Button } from "../../components/ui/Button";
-import { api } from "../../service/api";
-import { useEffect, useState } from "react";
 import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { LuTarget } from "react-icons/lu";
-import { TbTrash } from "react-icons/tb";
-import { BsLightning } from "react-icons/bs";
+import { useState } from "react";
 import { ConfirmDelete } from "../../components/modals/confirmDelete";
 import { CreateGoalModal } from "../../components/modals/createGoalModal";
-
-export interface GoalsProps {
-    id: string;
-    name: string;
-    description: string;
-    end_date: string;
-    course?: {
-        id: string;
-        name: string;
-    };
-    goalsTopcis?: {
-        id: string;
-        name: string;
-        completed?: boolean;
-    }[];
-}
+import { useGoals } from "./hooks/useGoals";
+import { GoalsCard } from "./components/goalsCard";
+import { GoalsTopicsList } from "./components/goalsTopicsList";
+import { HeaderPages } from "../../components/ui/HeaderPages";
 
 export function Goals() {
-    const [goalList, setGoalList] = useState<GoalsProps[]>([]);
-    const [goalSelected, setGoalSelected] = useState<GoalsProps | null>(null);
+    const {
+        goals,
+        selectedGoal,
+        setSelectedGoal,
+        deleteGoal,
+        toggleTopicCompletion,
+        deleteGoalTopic,
+        addGoalTopic,
+        refresh
+    } = useGoals();
+
     const [modalConfirmDelete, setModalConfirmDelete] = useState<boolean>(false);
     const [modalCreateGoal, setModalCreateGoal] = useState<boolean>(false);
     const [topicName, setTopicName] = useState<string>("");
 
-    async function fecthGoals() {
-        const token = localStorage.getItem("@tokenMira");
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            const response = await api.get("/goal", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setGoalSelected(response.data[0]);
-            setGoalList(response.data);
-        } catch (error) {
-            console.error("Erro ao buscar metas: ", error)
-        }
-    }
-
-    useEffect(() => {
-        fecthGoals();
-    }, [])
-
-    async function toggleTopicCompletion(id: string) {
-        const token = localStorage.getItem("@tokenMira");
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            const isCompleted = !goalSelected?.goalsTopcis?.find(t => t.id === id)?.completed;
-
-            await api.put(`/goal/topic/${id}`, {
-                completed: isCompleted
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (goalSelected) {
-                const updateTopics = goalSelected.goalsTopcis?.map(t => t.id === id ?
-                    { ...t, completed: isCompleted } : t
-                )
-                const updatedGoal = {
-                    ...goalSelected,
-                    goalsTopcis: updateTopics
-                }
-
-                setGoalSelected(updatedGoal);
-                setGoalList(goalList.map(g => g.id === goalSelected.id ? updatedGoal : g))
-            }
-
-        } catch (error) {
-            console.error("Erro ao atualizar tópico: ", error)
-        }
-    }
-
-    async function deleteGoalTopic(id: string) {
-        const token = localStorage.getItem("@tokenMira");
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            await api.delete(`/goal/topic/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (goalSelected) {
-                const updateTopics = goalSelected.goalsTopcis?.filter(t => t.id !== id)
-                const updatedGoal = {
-                    ...goalSelected,
-                    goalsTopcis: updateTopics
-                }
-
-                setGoalSelected(updatedGoal);
-                setGoalList(prev => prev.map(g => g.id === updatedGoal.id ? updatedGoal : g));
-            }
-            alert("Tópico deletado com sucesso");
-        } catch (error) {
-            console.error("Erro ao deletar tópico: ", error)
-        }
-    }
-
-    async function deleteGoal(id: string) {
-        const token = localStorage.getItem("@tokenMira");
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            await api.delete(`/goal/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            const updateGoals = goalList.filter(g => g.id !== id)
-            setGoalList(updateGoals);
-
-            if (goalSelected?.id === id) {
-                setGoalSelected(null);
-            }
-
-            alert("Meta deletada com sucesso");
-        } catch (error) {
-            console.error("Erro ao deletar meta: ", error)
-        }
-    }
-
-    async function addGoalTopic(name: string) {
-        const token = localStorage.getItem("@tokenMira");
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            await api.post(`/goal/topic/${goalSelected?.id}`, {
-                name
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            alert("Tópico adicionado com sucesso");
-            setTopicName("");
-            location.reload();
-        } catch (err) {
-            console.error("Erro ao adicionar tópico: ", err)
-        }
-    }
-
-
     return (
         <main className="bg-zinc-200/10 min-h-screen">
             <Container>
-
-                <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="font-bold text-2xl sm:text-3xl">Metas</h1>
-                        <span className="text-zinc-500 text-sm sm:text-base">
-                            Defina e acompanhe seus objetivos
-                        </span>
-                    </div>
-
+                <HeaderPages
+                    title="Metas"
+                    subTitle="Defina e acompanhe seus objetivos"
+                >
                     <Button
                         onClick={() => setModalCreateGoal(true)}
                         type="button">
-                        <FiPlus size={18} className="mr-2" />
-                        Nova Meta
+                        <FiPlus size={16} className="mr-1 sm:mr-2" />
+                        <span className="text-xs sm:text-sm">Nova Meta</span>
                     </Button>
-                </header>
+                </HeaderPages>
 
-                <div className="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                <div className="mt-6 sm:mt-8 md:mt-12 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2 sm:px-0">
                     <section className="lg:col-span-1">
-
-                        {goalList.map((g) => (
-                            <div className="flex items-center gap-6 relative">
-                                <div key={g.id} onClick={() => setGoalSelected(g)} className={`w-full bg-white border rounded-2xl p-4 shadow-lg mb-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-950 ${goalSelected?.id == g.id ? "border-blue-950 scale-105" : "border-gray-200"}`}>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold">
-                                                <LuTarget size={24} className="text-blue-950" />
-                                            </div>
-
-                                            <div>
-                                                <h2 className="sm:text-lg text-base font-semibold text-gray-900">
-                                                    {g.name}
-                                                </h2>
-                                                <p className="text-sm text-gray-500">
-                                                    Prazo: {format(
-                                                        parse(g.end_date, "dd/MM/yyyy", new Date()),
-                                                        "MMM yyyy",
-                                                        { locale: ptBR }
-                                                    )}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <button onClick={(e) => { e.stopPropagation(); setModalConfirmDelete(true); setGoalSelected(g) }} className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 shadow-sm">
-                                            <TbTrash size={16} />
-                                        </button>
-                                    </div>
-
-                                    <div className="flex gap-3 mt-2">
-                                        {g.course && (
-                                            <span className="text-sm text-gray-500">
-                                                {g.course.name}
-                                            </span>
-                                        )}
-
-                                        {g.goalsTopcis && (
-                                            <span className="text-sm text-gray-500 flex items-center">
-                                                <BsLightning size={16} className="text-blue-600" />
-                                                {g.goalsTopcis?.length} tópico(s)
-                                            </span>
-                                        )}
-
-                                    </div>
-                                </div>
-                            </div>
+                        {goals.map((g) => (
+                            <GoalsCard
+                                key={g.id}
+                                goal={g}
+                                isSelected={selectedGoal?.id === g.id}
+                                onSelect={setSelectedGoal}
+                                onDelete={() => {
+                                    setSelectedGoal(g);
+                                    setModalConfirmDelete(true);
+                                }}
+                            />
                         ))}
-
                     </section>
-                    <section className="lg:col-span-2 bg-white border border-gray-200 rounded-2xl p-6 shadow-lg">
-                        {goalSelected ? (
+
+                    <section className="lg:col-span-2 bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                        {selectedGoal ? (
                             <div>
-                                <div className="mb-4 flex items-center justify-between">
-                                    <div>
-                                        <p className="font-bold sm:text-xl text-lg">{goalSelected?.name}</p>
-                                        <span className="italic text-gray-500">{goalSelected?.description}</span>
+                                <div className="mb-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                                    <div className="min-w-0">
+                                        <p className="font-bold text-base sm:text-xl truncate">{selectedGoal?.name}</p>
+                                        <span className="italic text-gray-500 text-xs sm:text-sm block truncate">{selectedGoal?.description}</span>
                                     </div>
-                                    <span className="text-gray-500">
+                                    <span className="text-gray-500 text-xs sm:text-sm shrink-0">
                                         {format(
-                                            parse(goalSelected?.end_date, "dd/MM/yyyy", new Date()),
+                                            parse(selectedGoal?.end_date, "dd/MM/yyyy", new Date()),
                                             "MMM yyyy",
                                             { locale: ptBR }
                                         )}
                                     </span>
                                 </div>
 
-                                <div className="mt-6">
-                                    <div className="sm:flex sm:items-center sm:justify-between mb-4 sm:flex-row">
-                                        <h3 className="font-semibold sm:text-lg text-base">Tópicos Técnicos</h3>
-                                        <div className="flex gap-4">
-                                            <input className="h-10 rounded-lg border-2 border-gray-200 w-full outline-none px-2"
-                                                placeholder="Adicione um tópico"
-                                                type="text"
-                                                value={topicName}
-                                                onChange={(e) => setTopicName(e.target.value)}
-                                            />
-                                            <button onClick={() => addGoalTopic(topicName)} className="sm:mt-0 mt-2 flex items-center gap-2 rounded-full border border-gray-300 px-2.5 py-1.5 text-sm text-gray-600 cursor-pointer hover:bg-blue-950 hover:text-white transition-all duration-300">
-                                                <FiPlus className="sm:text-lg text-base" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {goalSelected.goalsTopcis && goalSelected.goalsTopcis.length > 0 ? (
-                                            goalSelected.goalsTopcis.map((t) => (
-                                                <div
-                                                    key={t.id}
-                                                    className={`flex items-center justify-between gap-3 rounded-xl border p-4 transition-all duration-300 ${t.completed ? "border-green-500 bg-green-500/30" : "border-gray-300 bg-white hover:border-blue-950"}`}
-                                                >
-                                                    <div onClick={() => toggleTopicCompletion(t.id)} className="flex gap-2 cursor-pointer">
-                                                        <div className={`flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-400 transition-all duration-300 ${t.completed ? "border-none" : ""} `}>
-                                                            {t.completed && (
-                                                                <div className="bg-green-500/80 rounded-full h-6 w-6 text-white text-center">
-                                                                    ✓
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <p className={`font-medium text-sm ${t.completed ? "text-green-500" : "text-gray-900"}`}>{t.name} </p>
-                                                    </div>
-                                                    <button onClick={() => deleteGoalTopic(t.id)} className="transition-all duration-300 hover:text-red-600 cursor-pointer">
-                                                        <TbTrash size={20} />
-                                                    </button>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="col-span-full text-center py-8">
-                                                <p className="text-gray-400 text-sm">Nenhum tópico adicionado ainda</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                <GoalsTopicsList
+                                    topics={selectedGoal.goalsTopcis}
+                                    topicName={topicName}
+                                    onTopicNameChange={setTopicName}
+                                    onAddTopic={() => {
+                                        if (topicName.trim()) {
+                                            addGoalTopic(topicName);
+                                            setTopicName("");
+                                        }
+                                    }}
+                                    onToggleTopic={toggleTopicCompletion}
+                                    onDeleteTopic={deleteGoalTopic}
+                                />
                             </div>
                         ) : (
-                            <div>
-                                <p className="text-gray-500">Selecione uma meta para ver os detalhes</p>
+                            <div className="flex items-center justify-center h-40">
+                                <p className="text-gray-500 text-sm">Selecione uma meta para ver os detalhes</p>
                             </div>
                         )}
                     </section>
-                </div >
+                </div>
 
-            </Container >
+            </Container>
 
-            {modalConfirmDelete && <ConfirmDelete closeModal={() => setModalConfirmDelete(false)} goal={goalSelected} deleteGoal={deleteGoal} />}
-            {modalCreateGoal && <CreateGoalModal onSuccess={fecthGoals} closeModal={() => setModalCreateGoal(false)} />}
+            {modalConfirmDelete && (
+                <ConfirmDelete
+                    closeModal={() => setModalConfirmDelete(false)}
+                    goal={selectedGoal}
+                    deleteGoal={deleteGoal}
+                />
+            )}
+            {modalCreateGoal && (
+                <CreateGoalModal
+                    onSuccess={refresh}
+                    closeModal={() => setModalCreateGoal(false)}
+                />
+            )}
 
-        </main >
+        </main>
     )
 }

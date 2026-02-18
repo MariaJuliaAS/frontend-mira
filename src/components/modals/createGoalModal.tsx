@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdOutlineClose } from "react-icons/md";
 import z from "zod";
-import type { CourseProps } from "../../pages/courses";
+import type { CourseProps } from "../../pages/courses/types/courseTypes";
 import { api } from "../../service/api";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
