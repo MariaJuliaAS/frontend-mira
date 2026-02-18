@@ -32,7 +32,7 @@ export function CalendarGrid({ commitments }: Props) {
                 {days.map((day) => (
                     <div key={day.toString()}
                         onClick={() => setSelectedDate(day)}
-                        className={`flex flex-col border border-gray-300 rounded-tr-xl rounded-bl-xl font-semibold p-2 min-h-22 cursor-pointer transition-all duration-300 hover:bg-blue-800/40 hover:text-blue-950
+                        className={`flex flex-col border border-gray-300 rounded-tr-xl rounded-bl-xl font-semibold p-2 sm:min-h-22 min-h-12 cursor-pointer transition-all duration-300 hover:bg-blue-800/40 hover:text-blue-950
                                                             ${isSameDay(day, selectedDate) ? "bg-blue-800/60 text-blue-950" : ""} ${isSameMonth(day, currentDate) ? "" : "opacity-40"}`}>
                         <span>
                             {format(day, "d")}
