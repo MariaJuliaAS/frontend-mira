@@ -156,30 +156,30 @@ export function Profile() {
     return (
         <main className="bg-zinc-200/10 min-h-screen">
             <Container>
-                <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <header className="flex flex-col gap-2 sm:gap-4 sm:flex-row sm:items-center sm:justify-between px-2 sm:px-0">
                     <div>
-                        <h1 className="font-bold text-2xl sm:text-3xl">Perfil</h1>
-                        <span className="text-zinc-500 text-sm sm:text-base">
+                        <h1 className="font-bold text-xl sm:text-2xl md:text-3xl">Perfil</h1>
+                        <span className="text-zinc-500 text-xs sm:text-sm md:text-base">
                             Gerencie suas informações pessoais e acadêmicas
                         </span>
                     </div>
                 </header>
 
-                <div className="mt-8 sm:mt-12 flex gap-6 lg:gap-8 min-h-full">
-                    <section className="w-full flex-2 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg">
-                        <div className="flex w-full justify-between">
-                            <h2 className="text-lg font-semibold capitalize flex items-center gap-2">Informações do Usuário</h2>
+                <div className="mt-6 sm:mt-8 md:mt-12 flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 min-h-full px-2 sm:px-0">
+                    <section className="w-full lg:flex-2 bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                        <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+                            <h2 className="text-base sm:text-lg font-semibold capitalize flex items-center gap-2">Informações do Usuário</h2>
                             {formsMode === "FormsMode" ? (
-                                <div className="flex gap-4">
-                                    <button className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-4 py-1 flex justify-center items-center gap-2 bg-zinc-200/10 rounded-md border border-gray-200" onClick={handleCancel}>Cancelar</button>
-                                    <Button onClick={handleSubmit(onSubmit)}>
-                                        <FaRegSave size={16} className="mr-2" />
-                                        Salvar
+                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                                    <button className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-red-600 hover:text-white text-red-600 px-3 sm:px-4 py-2 flex justify-center items-center gap-1 sm:gap-2 bg-zinc-200/10 rounded-md border border-gray-200 text-xs sm:text-sm" onClick={handleCancel}>Cancelar</button>
+                                    <Button width="flex-1 sm:flex-none" onClick={handleSubmit(onSubmit)}>
+                                        <FaRegSave size={14} className="mr-1 sm:mr-2" />
+                                        <span className="py-1">Salvar</span>
                                     </Button>
                                 </div>
                             ) : (
-                                <button onClick={toFormsMode} className="cursor-pointer transition-all duration-300 hover:text-white hover:bg-blue-950 hover:scale-105 text-blue-950 flex px-4 justify-center items-center gap-2 bg-zinc-200/10 rounded-md py-1 border border-gray-200">
-                                    <GoPencil size={16} />
+                                <button onClick={toFormsMode} className="cursor-pointer transition-all duration-300 hover:text-white hover:bg-blue-950 hover:scale-105 text-blue-950 flex px-3 sm:px-4 justify-center items-center gap-1 sm:gap-2 bg-zinc-200/10 rounded-md py-2 border border-gray-200 text-xs sm:text-sm">
+                                    <GoPencil size={14} />
                                     {userDetail?.profiles ? "Editar" : "Adicionar"}
                                 </button>
                             )}
@@ -187,70 +187,76 @@ export function Profile() {
 
                         <div className="mt-6 gap-4 flex flex-col">
                             <div className="flex items-center flex-col">
-                                <span className="bg-zinc-300/50 h-24 w-24 flex items-center justify-center rounded-full">
-                                    <FaRegUser size={42} className="text-zinc-600" />
+                                <span className="bg-zinc-300/50 h-20 sm:h-24 w-20 sm:w-24 flex items-center justify-center rounded-full flex-shrink-0">
+                                    <FaRegUser size={32} className="sm:w-10 sm:h-10 text-zinc-600" />
                                 </span>
-                                <p className="flex flex-col mt-2 font-bold text-lg" >{userDetail?.name}</p>
-                                <span className="text-zinc-700" >{userDetail?.email}</span>
+                                <p className="flex flex-col mt-3 sm:mt-4 font-bold text-base sm:text-lg text-center" >{userDetail?.name}</p>
+                                <span className="text-zinc-700 text-xs sm:text-sm text-center" >{userDetail?.email}</span>
                             </div>
 
                             {formsMode === "FormsMode" ? (
-                                <form>
-                                    <label className="text-black font-medium mt-4 mb-1 sm:text-base text-sm">Curso</label>
-                                    <Input
-                                        type="text"
-                                        placeholder="Ex.: Ciência da Computação"
-                                        name="program"
-                                        register={register}
-                                        error={errors.program?.message}
-                                    />
-                                    <label className="text-black font-medium mt-4 mb-1 sm:text-base text-sm">Período</label>
-                                    <Input
-                                        type="number"
-                                        placeholder="Ex.: 3"
-                                        name="period"
-                                        register={register}
-                                        error={errors.period?.message}
-                                    />
-                                    <label className="text-black font-medium mt-4 mb-1 sm:text-base text-sm">Universidade</label>
-                                    <Input
-                                        type="text"
-                                        placeholder="Ex.: UFERSA"
-                                        name="university"
-                                        register={register}
-                                        error={errors.university?.message}
-                                    />
+                                <form className="space-y-4">
+                                    <div>
+                                        <label className="text-black font-medium mb-2 sm:text-base text-xs block">Curso</label>
+                                        <Input
+                                            type="text"
+                                            placeholder="Ex.: Ciência da Computação"
+                                            name="program"
+                                            register={register}
+                                            error={errors.program?.message}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-black font-medium mb-2 sm:text-base text-xs block">Período</label>
+                                        <Input
+                                            type="number"
+                                            placeholder="Ex.: 3"
+                                            name="period"
+                                            register={register}
+                                            error={errors.period?.message}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-black font-medium mb-2 sm:text-base text-xs block">Universidade</label>
+                                        <Input
+                                            type="text"
+                                            placeholder="Ex.: UFERSA"
+                                            name="university"
+                                            register={register}
+                                            error={errors.university?.message}
+                                        />
+                                    </div>
                                 </form>
                             ) : (
                                 <>
-                                    <div className="bg-zinc-300/10 rounded-xl px-4 py-2 flex items-center gap-2">
-                                        <LuBookOpen size={22} className="text-zinc-800" />
-                                        <p className="flex flex-col" >
-                                            Curso
+                                    <div className="bg-zinc-300/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-3 sm:py-4 flex items-start sm:items-center gap-3">
+                                        <LuBookOpen size={18} className="sm:w-5 sm:h-5 text-zinc-800 flex-shrink-0 mt-0.5 sm:mt-0" />
+                                        <p className="flex flex-col text-xs sm:text-sm" >
+                                            <span className="font-medium text-gray-600">Curso</span>
                                             {userDetail?.profiles?.program ? (
-                                                <span className="font-semibold">{userDetail?.profiles?.program}</span>
+                                                <span className="font-semibold text-gray-900">{userDetail?.profiles?.program}</span>
                                             ) : (
-                                                <span className="text-zinc-500 text-sm">Clique em adicionar e adicine seu curso.</span>)}
+                                                <span className="text-zinc-500 text-xs">Clique em adicionar seu curso.</span>)}
                                         </p>
                                     </div>
-                                    <div className="bg-zinc-300/10 rounded-xl px-4 py-2 flex items-center gap-2">
-                                        <LuCalendar size={22} className="text-zinc-800" />
-                                        <p className="flex flex-col" >
-                                            Período
+                                    <div className="bg-zinc-300/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-3 sm:py-4 flex items-start sm:items-center gap-3">
+                                        <LuCalendar size={18} className="sm:w-5 sm:h-5 text-zinc-800 flex-shrink-0 mt-0.5 sm:mt-0" />
+                                        <p className="flex flex-col text-xs sm:text-sm" >
+                                            <span className="font-medium text-gray-600">Período</span>
                                             {userDetail?.profiles?.period ? (
-                                                <span className="font-semibold">{userDetail?.profiles?.period}° Período</span>
+                                                <span className="font-semibold text-gray-900">{userDetail?.profiles?.period}° Período</span>
                                             ) : (
-                                                <span className="text-zinc-500 text-sm">Clique em adicionar e adicine seu período.</span>)}
+                                                <span className="text-zinc-500 text-xs">Clique em adicionar seu período.</span>)}
                                         </p>
                                     </div>
-                                    <div className="bg-zinc-300/10 rounded-xl px-4 py-2 flex items-center gap-2">
-                                        <FaRegBuilding size={22} className="text-zinc-800" />
-                                        <p className="flex flex-col" >
-                                            Universidade
+                                    <div className="bg-zinc-300/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-3 sm:py-4 flex items-start sm:items-center gap-3">
+                                        <FaRegBuilding size={18} className="sm:w-5 sm:h-5 text-zinc-800 flex-shrink-0 mt-0.5 sm:mt-0" />
+                                        <p className="flex flex-col text-xs sm:text-sm" >
+                                            <span className="font-medium text-gray-600">Universidade</span>
                                             {userDetail?.profiles?.university ? (
-                                                <span className="font-semibold">{userDetail?.profiles?.university}</span>
+                                                <span className="font-semibold text-gray-900">{userDetail?.profiles?.university}</span>
                                             ) :
-                                                (<span className="text-zinc-500 text-sm">Clique em adicionar e adicine sua universidade.</span>)}
+                                                (<span className="text-zinc-500 text-xs">Clique em adicionar sua universidade.</span>)}
                                         </p>
                                     </div>
                                 </>
@@ -258,31 +264,31 @@ export function Profile() {
 
                         </div>
                     </section>
-                    <section className="w-full flex-1 ">
-                        <div className="flex flex-col gap-4 h-full">
+                    <section className="w-full lg:flex-1 ">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 lg:flex lg:flex-col gap-3 sm:gap-4 h-full">
 
-                            <div className="flex-1 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg flex flex-col items-center justify-center">
-                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold">
-                                    <LuClock size={24} className="text-blue-950" />
+                            <div className="bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-3 sm:p-4 shadow-lg flex flex-col items-center justify-center">
+                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold flex-shrink-0">
+                                    <LuClock size={18} className="sm:w-6 sm:h-6 text-blue-950" />
                                 </span>
-                                <p className="font-bold text-xl mt-2">{secondsToHours(userStats?.totalStudyTime.time)}</p>
-                                <span className="text-zinc-500 text-sm">Horas estudadas</span>
+                                <p className="font-bold text-lg sm:text-xl mt-2">{secondsToHours(userStats?.totalStudyTime.time)}</p>
+                                <span className="text-zinc-500 text-xs sm:text-sm text-center">Horas estudadas</span>
                             </div>
 
-                            <div className="flex-1 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg flex flex-col items-center justify-center">
-                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold">
-                                    <LuBookOpen size={24} className="text-blue-950" />
+                            <div className="bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-3 sm:p-4 shadow-lg flex flex-col items-center justify-center">
+                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold flex-shrink-0">
+                                    <LuBookOpen size={18} className="sm:w-6 sm:h-6 text-blue-950" />
                                 </span>
-                                <p className="font-bold text-xl mt-2">{userStats?.activeCourses}</p>
-                                <span className="text-zinc-500 text-sm">Matérias ativas</span>
+                                <p className="font-bold text-lg sm:text-xl mt-2">{userStats?.activeCourses}</p>
+                                <span className="text-zinc-500 text-xs sm:text-sm text-center">Matérias ativas</span>
                             </div>
 
-                            <div className="flex-1 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg flex flex-col items-center justify-center">
-                                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold">
-                                    <LuTarget size={24} className="text-blue-950" />
+                            <div className="bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-3 sm:p-4 shadow-lg flex flex-col items-center justify-center">
+                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold flex-shrink-0">
+                                    <LuTarget size={18} className="sm:w-6 sm:h-6 text-blue-950" />
                                 </span>
-                                <p className="font-bold text-xl mt-2">{userStats?.activeGoals}</p>
-                                <span className="text-zinc-500 text-sm">Metas ativas</span>
+                                <p className="font-bold text-lg sm:text-xl mt-2">{userStats?.activeGoals}</p>
+                                <span className="text-zinc-500 text-xs sm:text-sm text-center">Metas ativas</span>
                             </div>
 
                         </div>
