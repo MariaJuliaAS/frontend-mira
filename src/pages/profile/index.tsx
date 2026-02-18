@@ -187,7 +187,7 @@ export function Profile() {
 
                         <div className="mt-6 gap-4 flex flex-col">
                             <div className="flex items-center flex-col">
-                                <span className="bg-zinc-300/50 h-20 sm:h-24 w-20 sm:w-24 flex items-center justify-center rounded-full flex-shrink-0">
+                                <span className="bg-zinc-300/50 h-20 sm:h-24 w-20 sm:w-24 flex items-center justify-center rounded-full shrink-0">
                                     <FaRegUser size={32} className="sm:w-10 sm:h-10 text-zinc-600" />
                                 </span>
                                 <p className="flex flex-col mt-3 sm:mt-4 font-bold text-base sm:text-lg text-center" >{userDetail?.name}</p>
@@ -230,7 +230,7 @@ export function Profile() {
                             ) : (
                                 <>
                                     <div className="bg-zinc-300/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-3 sm:py-4 flex items-start sm:items-center gap-3">
-                                        <LuBookOpen size={18} className="sm:w-5 sm:h-5 text-zinc-800 flex-shrink-0 mt-0.5 sm:mt-0" />
+                                        <LuBookOpen size={18} className="sm:w-5 sm:h-5 text-zinc-800 shrink-0 mt-0.5 sm:mt-0" />
                                         <p className="flex flex-col text-xs sm:text-sm" >
                                             <span className="font-medium text-gray-600">Curso</span>
                                             {userDetail?.profiles?.program ? (
@@ -240,7 +240,7 @@ export function Profile() {
                                         </p>
                                     </div>
                                     <div className="bg-zinc-300/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-3 sm:py-4 flex items-start sm:items-center gap-3">
-                                        <LuCalendar size={18} className="sm:w-5 sm:h-5 text-zinc-800 flex-shrink-0 mt-0.5 sm:mt-0" />
+                                        <LuCalendar size={18} className="sm:w-5 sm:h-5 text-zinc-800 shrink-0 mt-0.5 sm:mt-0" />
                                         <p className="flex flex-col text-xs sm:text-sm" >
                                             <span className="font-medium text-gray-600">Período</span>
                                             {userDetail?.profiles?.period ? (
@@ -250,7 +250,7 @@ export function Profile() {
                                         </p>
                                     </div>
                                     <div className="bg-zinc-300/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-3 sm:py-4 flex items-start sm:items-center gap-3">
-                                        <FaRegBuilding size={18} className="sm:w-5 sm:h-5 text-zinc-800 flex-shrink-0 mt-0.5 sm:mt-0" />
+                                        <FaRegBuilding size={18} className="sm:w-5 sm:h-5 text-zinc-800 shrink-0 mt-0.5 sm:mt-0" />
                                         <p className="flex flex-col text-xs sm:text-sm" >
                                             <span className="font-medium text-gray-600">Universidade</span>
                                             {userDetail?.profiles?.university ? (
@@ -268,7 +268,7 @@ export function Profile() {
                         <div className="grid grid-cols-1 sm:grid-cols-3 lg:flex lg:flex-col gap-3 sm:gap-4 h-full">
 
                             <div className="bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-3 sm:p-4 shadow-lg flex flex-col items-center justify-center">
-                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold flex-shrink-0">
+                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold shrink-0">
                                     <LuClock size={18} className="sm:w-6 sm:h-6 text-blue-950" />
                                 </span>
                                 <p className="font-bold text-lg sm:text-xl mt-2">{secondsToHours(userStats?.totalStudyTime.time)}</p>
@@ -276,7 +276,7 @@ export function Profile() {
                             </div>
 
                             <div className="bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-3 sm:p-4 shadow-lg flex flex-col items-center justify-center">
-                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold flex-shrink-0">
+                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold shrink-0">
                                     <LuBookOpen size={18} className="sm:w-6 sm:h-6 text-blue-950" />
                                 </span>
                                 <p className="font-bold text-lg sm:text-xl mt-2">{userStats?.activeCourses}</p>
@@ -284,7 +284,7 @@ export function Profile() {
                             </div>
 
                             <div className="bg-white border border-gray-200 rounded-lg sm:rounded-2xl p-3 sm:p-4 shadow-lg flex flex-col items-center justify-center">
-                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold flex-shrink-0">
+                                <span className="flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-lg sm:rounded-xl bg-blue-100 text-blue-600 font-semibold shrink-0">
                                     <LuTarget size={18} className="sm:w-6 sm:h-6 text-blue-950" />
                                 </span>
                                 <p className="font-bold text-lg sm:text-xl mt-2">{userStats?.activeGoals}</p>
