@@ -1,15 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdOutlineClose } from "react-icons/md";
 import z from "zod";
-import type { CourseProps } from "../../pages/courses/types/courseTypes";
-import { api } from "../../service/api";
-import { Input } from "../ui/Input";
-import { Button } from "../ui/Button";
+import { Input } from "../../../components/ui/Input";
+import { Button } from "../../../components/ui/Button";
 import { LuLoader } from "react-icons/lu";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { useCourse } from "../../courses/hooks/useCourse";
+import { useGoals } from "../hooks/useGoals";
 
 interface ModalProps {
     closeModal: () => void;
@@ -31,73 +29,24 @@ export function CreateGoalModal({ closeModal, onSuccess }: ModalProps) {
         mode: "onChange"
     })
     const [loading, setLoading] = useState(false);
-    const [courseList, setCourseList] = useState<CourseProps[]>([]);
 
-    async function fetchCourses() {
-        const token = localStorage.getItem("@tokenMira");
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            const response = await api.get("/course/all", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-
-            setCourseList(response.data);
-        } catch (err) {
-            console.error("Error fetching courses", err);
-        }
-    }
-
-    useEffect(() => {
-        fetchCourses();
-    }, [])
+    const { courses } = useCourse();
+    const { createGoal } = useGoals();
 
     async function onSubmit(data: FormData) {
-        const token = localStorage.getItem("@tokenMira");
         setLoading(true);
 
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-        console.log(data.course_id)
+        await createGoal({
+            name: data.name,
+            description: data.description,
+            end_date: data.end_date,
+            course_id: data.course_id || undefined
+        });
 
-        try {
-            const date = format(data.end_date + "T00:00:00", "dd/MM/yyyy", { locale: ptBR })
-            if (!data.course_id) {
-                await api.post("/goal", {
-                    name: data.name,
-                    description: data.description,
-                    end_date: date
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-            } else {
-                await api.post(`/goal/courses/${data.course_id}`, {
-                    name: data.name,
-                    description: data.description,
-                    end_date: date
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-            }
-        } catch (err) {
-            console.error("Erro ao criar meta: ", err);
-        } finally {
-            closeModal();
-            setLoading(false);
-            onSuccess?.();
-        }
+        alert("Meta criada com sucesso");
+        closeModal();
+        onSuccess?.();
+        setLoading(false);
     }
 
     return (
@@ -138,7 +87,7 @@ export function CreateGoalModal({ closeModal, onSuccess }: ModalProps) {
                         {...register("course_id")}
                     >
                         <option value="">Selecione um tipo</option>
-                        {courseList.map((c) => (
+                        {courses.map((c) => (
                             <option key={c.id} value={c.id}>
                                 {c.name}
                             </option>

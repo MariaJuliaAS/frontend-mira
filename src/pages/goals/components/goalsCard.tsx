@@ -33,7 +33,7 @@ export function GoalsCard({ goal, isSelected, onSelect, onDelete }: GoalsCardPro
                             <p className="text-xs text-gray-500 truncate">
                                 Prazo: {format(
                                     parse(goal.end_date, "dd/MM/yyyy", new Date()),
-                                    "MMM yyyy",
+                                    "dd 'de' MMM', ' yyyy",
                                     { locale: ptBR }
                                 )}
                             </p>

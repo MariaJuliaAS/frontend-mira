@@ -1,5 +1,5 @@
-import type { CourseProps } from "../../pages/courses";
-import type { GoalsProps } from "../../pages/goals";
+import type { CourseProps } from "../../pages/courses/types/courseTypes";
+import type { GoalsProps } from "../../pages/goals/types/goalsTypes";
 
 interface ConfirmDeleteProps {
     closeModal: () => void;

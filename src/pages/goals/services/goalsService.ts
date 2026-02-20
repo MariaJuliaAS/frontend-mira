@@ -28,6 +28,13 @@ export const goalsService = {
     },
 
     async create(data: CreateGoalDTO): Promise<GoalsProps> {
+        if (data.course_id) {
+            const response = await api.post(`/goal/courses/${data.course_id}`, data, {
+                headers: getAuthHeader()
+            })
+            return response.data;
+        }
+
         const response = await api.post("/goal", data, {
             headers: getAuthHeader()
         })

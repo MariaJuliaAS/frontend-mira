@@ -5,7 +5,7 @@ import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
 import { ConfirmDelete } from "../../components/modals/confirmDelete";
-import { CreateGoalModal } from "../../components/modals/createGoalModal";
+import { CreateGoalModal } from "./modals/createGoalModal";
 import { useGoals } from "./hooks/useGoals";
 import { GoalsCard } from "./components/goalsCard";
 import { GoalsTopicsList } from "./components/goalsTopicsList";
@@ -69,7 +69,7 @@ export function Goals() {
                                     <span className="text-gray-500 text-xs sm:text-sm shrink-0">
                                         {format(
                                             parse(selectedGoal?.end_date, "dd/MM/yyyy", new Date()),
-                                            "MMM yyyy",
+                                            "dd 'de' MMM',' yyyy",
                                             { locale: ptBR }
                                         )}
                                     </span>
