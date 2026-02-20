@@ -39,9 +39,17 @@ export function Login() {
             localStorage.setItem("@tokenMira", response.data.token);
             navigate("/", { replace: true })
         } catch (err: any) {
-            alert("Email ou senha incorretos")
-            const message = err.response?.data?.error || "Unexpected error. Try again.";
-            console.error(message);
+            const status = err.response?.status;
+
+            if (status === 429) {
+                alert("Muitas tentativas de login. Tente novamente em alguns minutos.");
+            } else if (status === 401) {
+                alert("Email ou senha incorretos");
+            } else {
+                alert("Erro inesperado. Tente novamente.");
+            }
+
+            console.error(err.response?.data?.error);
         } finally {
             setLoading(false);
         }
