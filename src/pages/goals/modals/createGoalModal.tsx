@@ -36,10 +36,12 @@ export function CreateGoalModal({ closeModal, onSuccess }: ModalProps) {
     async function onSubmit(data: FormData) {
         setLoading(true);
 
+        const date = new Date(data.end_date);
+
         await createGoal({
             name: data.name,
             description: data.description,
-            end_date: data.end_date,
+            end_date: date,
             course_id: data.course_id || undefined
         });
 

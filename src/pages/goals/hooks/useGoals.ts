@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import type { GoalsProps, CreateGoalDTO } from "../types/goalsTypes";
 import { goalsService } from "../services/goalsService";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 export function useGoals() {
     const [goals, setGoals] = useState<GoalsProps[]>([]);
@@ -10,7 +8,7 @@ export function useGoals() {
 
     async function fetchGoals() {
         try {
-            const data = await goalsService.getAll();
+            const data: GoalsProps[] = await goalsService.getAll();
             setGoals(data);
             if (data.length > 0) {
                 setSelectedGoal(data[0]);
@@ -96,12 +94,7 @@ export function useGoals() {
 
     async function createGoal(data: CreateGoalDTO): Promise<void> {
         try {
-            const formattedData = {
-                ...data,
-                end_date: format(data.end_date + "T00:00:00", "dd/MM/yyyy", { locale: ptBR })
-            };
-
-            await goalsService.create(formattedData);
+            await goalsService.create(data);
             await fetchGoals();
         } catch (error) {
             console.error("Error creating goal:", error);

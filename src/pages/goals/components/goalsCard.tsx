@@ -1,9 +1,8 @@
-import { format, parse } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { LuTarget } from "react-icons/lu";
 import { TbTrash } from "react-icons/tb";
 import { BsLightning } from "react-icons/bs";
 import type { GoalsProps } from "../types/goalsTypes";
+import { formatDateIgnoringTimezone } from "../utils/formatDate";
 
 interface GoalsCardProps {
     goal: GoalsProps;
@@ -31,11 +30,7 @@ export function GoalsCard({ goal, isSelected, onSelect, onDelete }: GoalsCardPro
                                 {goal.name}
                             </h2>
                             <p className="text-xs text-gray-500 truncate">
-                                Prazo: {format(
-                                    parse(goal.end_date, "dd/MM/yyyy", new Date()),
-                                    "dd 'de' MMM', ' yyyy",
-                                    { locale: ptBR }
-                                )}
+                                Prazo: {formatDateIgnoringTimezone(goal.end_date)}
                             </p>
                         </div>
                     </div>

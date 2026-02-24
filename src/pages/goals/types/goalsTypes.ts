@@ -21,7 +21,7 @@ export interface GoalsProps {
 export interface CreateGoalDTO {
     name: string;
     description?: string;
-    end_date: string;
+    end_date: Date;
     course_id?: string;
 }
 
