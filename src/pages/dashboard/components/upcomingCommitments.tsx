@@ -34,12 +34,7 @@ export function UpcomingCommitments({ commitments }: UpcomingCommitmentsProps) {
             ...commitment,
             dateInfo: getDateLabel(commitment.date)
         }))
-        .filter(commitment => commitment.dateInfo !== null)
-        .sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return dateA.getTime() - dateB.getTime();
-        });
+        .filter(commitment => commitment.dateInfo !== null);
 
     return (
         <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-lg">

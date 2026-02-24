@@ -30,18 +30,7 @@ export function UpcomingGoals({ goals }: UpcomingGoalsProps) {
             ...goal,
             urgency: getUrgencyLevel(goal.end_date)
         }))
-        .filter(goal => goal.urgency !== null)
-        .sort((a, b) => {
-            const daysA = differenceInDays(new Date(a.end_date), new Date());
-            const daysB = differenceInDays(new Date(b.end_date), new Date());
-            return daysA - daysB;
-        });
-
-    const completionPercentage = (goal: GoalsProps) => {
-        if (!goal.goalsTopcis || goal.goalsTopcis.length === 0) return 0;
-        const completed = goal.goalsTopcis.filter(t => t.completed).length;
-        return Math.round((completed / goal.goalsTopcis.length) * 100);
-    };
+        .filter(goal => goal.urgency !== null);
 
     return (
         <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-lg">
@@ -72,7 +61,6 @@ export function UpcomingGoals({ goals }: UpcomingGoalsProps) {
                     {upcomingGoals.slice(0, 5).map((goal) => {
                         const urgency = goal.urgency!;
                         const Icon = urgency.icon;
-                        const progress = completionPercentage(goal);
 
                         return (
                             <div
@@ -98,20 +86,7 @@ export function UpcomingGoals({ goals }: UpcomingGoalsProps) {
 
                                 <div className="flex items-center justify-between gap-3 text-xs text-gray-600">
                                     <span>Prazo: {format(new Date(goal.end_date), "dd 'de' MMM", { locale: ptBR })}</span>
-                                    {goal.goalsTopcis && goal.goalsTopcis.length > 0 && (
-                                        <span className="font-medium">{progress}% concluído</span>
-                                    )}
                                 </div>
-
-                                {goal.goalsTopcis && goal.goalsTopcis.length > 0 && (
-                                    <div className="mt-2 bg-gray-200 rounded-full h-2 overflow-hidden">
-                                        <div
-                                            className={`h-full transition-all duration-500 ${progress === 100 ? 'bg-green-500' : 'bg-blue-950'
-                                                }`}
-                                            style={{ width: `${progress}%` }}
-                                        />
-                                    </div>
-                                )}
                             </div>
                         );
                     })}
