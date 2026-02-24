@@ -8,7 +8,8 @@ import { useGoals } from "./hooks/useGoals";
 import { GoalsCard } from "./components/goalsCard";
 import { GoalsTopicsList } from "./components/goalsTopicsList";
 import { HeaderPages } from "../../components/ui/HeaderPages";
-import { formatDateIgnoringTimezone } from "./utils/formatDate";
+import { ptBR } from "date-fns/locale";
+import { format } from "date-fns";
 
 export function Goals() {
     const {
@@ -66,7 +67,7 @@ export function Goals() {
                                         <span className="italic text-gray-500 text-xs sm:text-sm block truncate">{selectedGoal?.description}</span>
                                     </div>
                                     <span className="text-gray-500 text-xs sm:text-sm shrink-0">
-                                        {formatDateIgnoringTimezone(selectedGoal.end_date)}
+                                        {format(selectedGoal.end_date, "dd 'de' MMM', ' yyyy", { locale: ptBR })}
                                     </span>
                                 </div>
 

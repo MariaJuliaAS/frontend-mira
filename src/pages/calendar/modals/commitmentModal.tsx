@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "../../../components/ui/Button";
 import { CommitmentType } from "../constants/commitmentTypes";
-import { useCommitment } from "../hooks/useCommitment";
 import type { CreateCommitmentDTO } from "../types/calendarTypes";
 
 const COMMITMENT_TYPE_OPTIONS = Object.entries(CommitmentType).map(([key, value]) => ({
