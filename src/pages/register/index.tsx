@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../service/api";
 import { useState } from "react";
 import { Button } from "../../components/ui/Button";
+import toast from "react-hot-toast";
 
 const schema = z.object({
     name: z.string().nonempty("o campo nome é obrigatório"),
@@ -40,10 +41,10 @@ export function Register() {
                 password
             })
 
-            alert("Cadastro realizado com sucesso!")
+            toast.success("Cadastro realizado com sucesso!")
             navigate("/login", { replace: true })
         } catch (err: any) {
-            alert("Erro ao cadastrar usuário")
+            toast.error("Erro ao cadastrar usuário. Tente novamente.")
             const message = err.response?.data?.error || "Unexpected error. Try again.";
             console.error(message);
         } finally {

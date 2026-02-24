@@ -8,6 +8,7 @@ import { Button } from "../../../components/ui/Button";
 import { LuLoader } from "react-icons/lu";
 import { useCourse } from "../../courses/hooks/useCourse";
 import { useGoals } from "../hooks/useGoals";
+import toast from "react-hot-toast";
 
 interface ModalProps {
     closeModal: () => void;
@@ -43,7 +44,7 @@ export function CreateGoalModal({ closeModal, onSuccess }: ModalProps) {
             course_id: data.course_id || undefined
         });
 
-        alert("Meta criada com sucesso");
+        toast.success("Meta criada com sucesso!");
         closeModal();
         onSuccess?.();
         setLoading(false);

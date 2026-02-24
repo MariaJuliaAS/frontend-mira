@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../service/api";
 import { Button } from "../../components/ui/Button";
+import toast from "react-hot-toast";
 
 const schema = z.object({
     email: z.string().email("email inválido").nonempty("o campo email é obrigatório"),
@@ -42,11 +43,11 @@ export function Login() {
             const status = err.response?.status;
 
             if (status === 429) {
-                alert("Muitas tentativas de login. Tente novamente em alguns minutos.");
+                toast.error("Muitas tentativas de login. Tente novamente em alguns minutos.");
             } else if (status === 401) {
-                alert("Email ou senha incorretos");
+                toast.error("Email ou senha incorretos. Verifique suas credenciais.");
             } else {
-                alert("Erro inesperado. Tente novamente.");
+                toast.error("Erro inesperado. Tente novamente mais tarde.");
             }
 
             console.error(err.response?.data?.error);

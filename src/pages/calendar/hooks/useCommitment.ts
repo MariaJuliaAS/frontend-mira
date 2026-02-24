@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CommitmentsProps, CreateCommitmentDTO } from "../types/calendarTypes";
 import { commitmentService } from "../services/commitmentService";
+import toast from "react-hot-toast";
 
 export function useCommitment() {
     const [commitments, setCommitments] = useState<CommitmentsProps[]>([]);
@@ -18,7 +19,7 @@ export function useCommitment() {
         try {
             await commitmentService.delete(id);
             setCommitments(prev => prev.filter(commitment => commitment.id !== id));
-            alert("Compromisso deletado com sucesso");
+            toast.success("Compromisso deletado com sucesso!");
         } catch (error) {
             console.error("Error deleting commitment:", error);
         }
@@ -28,7 +29,7 @@ export function useCommitment() {
         try {
             const response = await commitmentService.create(data);
             setCommitments(prev => [...prev, response]);
-            alert("Compromisso criado com sucesso");
+            toast.success("Compromisso criado com sucesso!");
         } catch (error) {
             console.error("Error creating commitment:", error);
         }

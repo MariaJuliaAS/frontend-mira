@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CourseProps, CreateCourseDTO } from "../types/courseTypes";
 import { courseService } from "../services/courseService";
+import toast from "react-hot-toast";
 
 
 export function useCourse() {
@@ -19,7 +20,7 @@ export function useCourse() {
         try {
             await courseService.delete(id);
             setCourses(prev => prev.filter(course => course.id !== id));
-            alert("Curso deletado com sucesso");
+            toast.success("Curso deletado com sucesso!");
         } catch (error) {
             console.error("Error deleting course: ", error);
         }
@@ -29,7 +30,7 @@ export function useCourse() {
         try {
             const response = await courseService.create(data);
             setCourses(prev => [...prev, response]);
-            alert("Curso criado com sucesso");
+            toast.success("Curso criado com sucesso!");
         } catch (error) {
             console.error("Error creating course: ", error);
         }
@@ -39,7 +40,7 @@ export function useCourse() {
         try {
             await courseService.edit(data, id);
             setCourses(prev => prev.map(course => course.id === id ? { ...course, name: data.name, teacher: data.teacher } : course));
-            alert("Curso editado com sucesso");
+            toast.success("Curso editado com sucesso!");
         } catch (error) {
             console.error("Error editing course: ", error);
         }

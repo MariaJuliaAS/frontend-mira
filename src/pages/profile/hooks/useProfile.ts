@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { UserDetailProps, UserStatsProps, UpdateProfileDTO } from "../types/profileTypes";
 import { profileService } from "../services/profileService";
+import toast from "react-hot-toast";
 
 export function useProfile() {
     const [userDetail, setUserDetail] = useState<UserDetailProps>();
@@ -33,7 +34,7 @@ export function useProfile() {
             }
 
             await profileService.updateProfile(profileId, data);
-            alert("Edição feita com sucesso!");
+            toast.success("Perfil atualizado com sucesso!");
             await fetchUserDetail();
             return true;
         } catch (error) {
@@ -45,7 +46,7 @@ export function useProfile() {
     async function createProfile(data: UpdateProfileDTO) {
         try {
             await profileService.createProfile(data);
-            alert("Informações adicionadas com sucesso!");
+            toast.success("Informações adicionadas com sucesso!");
             await fetchUserDetail();
             return true;
         } catch (error) {

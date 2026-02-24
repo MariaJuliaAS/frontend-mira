@@ -2,7 +2,7 @@
 export interface CommitmentsProps {
     id: string;
     name: string;
-    date: string;
+    date: Date;
     type: CommitmentType;
     description?: string;
     course?: CourseProps;

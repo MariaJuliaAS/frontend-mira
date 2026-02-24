@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { GoalsProps, CreateGoalDTO } from "../types/goalsTypes";
 import { goalsService } from "../services/goalsService";
+import toast from "react-hot-toast";
 
 export function useGoals() {
     const [goals, setGoals] = useState<GoalsProps[]>([]);
@@ -28,7 +29,7 @@ export function useGoals() {
                 setSelectedGoal(updatedGoals[0] || null);
             }
 
-            alert("Meta deletada com sucesso");
+            toast.success("Meta deletada com sucesso!");
         } catch (error) {
             console.error("Error deleting goal:", error);
         }
@@ -74,7 +75,7 @@ export function useGoals() {
             setSelectedGoal(updatedGoal);
             setGoals(goals.map(g => g.id === selectedGoal.id ? updatedGoal : g));
 
-            alert("Tópico deletado com sucesso");
+            toast.success("Tópico deletado com sucesso!");
         } catch (error) {
             console.error("Error deleting topic:", error);
         }
@@ -85,7 +86,7 @@ export function useGoals() {
 
         try {
             await goalsService.createTopic(selectedGoal.id, { name: topicName });
-            alert("Tópico adicionado com sucesso");
+            toast.success("Tópico adicionado com sucesso!");
             await fetchGoals();
         } catch (error) {
             console.error("Error adding topic:", error);
