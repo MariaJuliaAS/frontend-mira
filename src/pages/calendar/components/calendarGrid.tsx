@@ -43,7 +43,7 @@ export function CalendarGrid({ commitments, currentDate, setSelectedDate, select
                                 const typeConfig = COMMITMENT_TYPES.find(
                                     (t) => t.value === c.type)
 
-                                return isSameDay(parse(c.date, "dd/MM/yyyy", new Date()), day) ?
+                                return isSameDay(c.date, day) ?
                                     (<span key={c.id} className={`w-2 h-2 rounded-full ${typeConfig?.colors.solid}`} />) :
                                     ""
                             })}

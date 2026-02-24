@@ -32,7 +32,7 @@ export interface CalendarContextData {
 
 export interface CreateCommitmentDTO {
     name: string;
-    date: string;
+    date: Date;
     type?: string;
     course_id?: string;
     description?: string;

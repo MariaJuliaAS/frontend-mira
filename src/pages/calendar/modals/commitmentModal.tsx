@@ -2,11 +2,11 @@ import { MdOutlineClose } from "react-icons/md";
 import { Input } from "../../../components/ui/Input";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { api } from "../../../service/api";
 import { Button } from "../../../components/ui/Button";
 import { CommitmentType } from "../constants/commitmentTypes";
+import { useCommitment } from "../hooks/useCommitment";
+import type { CreateCommitmentDTO } from "../types/calendarTypes";
 
 const COMMITMENT_TYPE_OPTIONS = Object.entries(CommitmentType).map(([key, value]) => ({
     label: key.charAt(0) + key.slice(1).toLowerCase(),
@@ -15,7 +15,8 @@ const COMMITMENT_TYPE_OPTIONS = Object.entries(CommitmentType).map(([key, value]
 
 interface ModalProps {
     closeModal: () => void;
-    createCommitment: (data: FormData) => void;
+    createCommitment: (data: CreateCommitmentDTO) => void;
+    courseList: CourseProps[];
 }
 
 interface CourseProps {
@@ -32,40 +33,20 @@ const schema = z.object({
 })
 export type FormData = z.infer<typeof schema>;
 
-export function CommitmentModal({ closeModal, createCommitment }: ModalProps) {
+export function CommitmentModal({ closeModal, createCommitment, courseList }: ModalProps) {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
-    const [courseList, setCourseList] = useState<CourseProps[]>([]);
 
-    async function fetchCourses() {
-        const token = localStorage.getItem("@tokenMira");
-
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            const response = await api.get("/course/all", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-
-            setCourseList(response.data);
-        } catch (err) {
-            console.error("Error fetching courses", err);
-        }
-    }
-
-    useEffect(() => {
-        fetchCourses();
-    }, [])
-
-    async function onSubmit(data: FormData) {
-        await createCommitment(data);
+    function onSubmit(data: FormData) {
+        createCommitment({
+            name: data.name,
+            date: new Date(data.date + "T00:00:00"),
+            type: data.type,
+            course_id: data.course_id,
+            description: data.description
+        });
         closeModal();
     }
 

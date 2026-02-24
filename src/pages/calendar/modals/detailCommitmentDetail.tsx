@@ -1,6 +1,7 @@
 import { LuBookOpen, LuCalendar, LuFileText } from "react-icons/lu";
 import { MdOutlineClose } from "react-icons/md";
 import type { CommitmentsProps } from "../types/calendarTypes";
+import { formatDateIgnoringTimezone } from "../../goals/utils/formatDate";
 
 interface ModalProps {
     closeModal: () => void;
@@ -43,7 +44,7 @@ export function DetailCommitmentModal({ closeModal, commitment }: ModalProps) {
                         <div>
                             <p className="text-gray-500">Data</p>
                             <p className="font-semibold">
-                                {commitment?.date}
+                                {formatDateIgnoringTimezone(commitment?.date || "")}
                             </p>
                         </div>
                     </div>

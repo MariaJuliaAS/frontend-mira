@@ -11,12 +11,14 @@ import { CommitmentCard } from "./components/commitmentCard";
 import { HeaderPages } from "../../components/ui/HeaderPages";
 import { DetailCommitmentModal } from "./modals/detailCommitmentDetail";
 import { useCalendar } from "./context/calendarContext";
+import { useCourse } from "../courses/hooks/useCourse";
 
 export function Calendar() {
     const [createModalIsOpen, setCreateModalIsOpen] = useState<boolean>(false);
     const [detailModalIsOpen, setDetailModalIsOpen] = useState<Boolean>(false);
     const { commitments, deleteCommitment, refresh, createCommitment } = useCommitment();
     const { commitmentSelected, selectedDate, setCommitmentSelected, currentDate, setCurrentDate, setSelectedDate } = useCalendar();
+    const { courses } = useCourse();
 
     return (
         <main className="bg-zinc-200/10 min-h-screen">
@@ -68,7 +70,7 @@ export function Calendar() {
             </Container>
 
             {detailModalIsOpen && <DetailCommitmentModal closeModal={() => setDetailModalIsOpen(false)} commitment={commitmentSelected} />}
-            {createModalIsOpen && <CommitmentModal closeModal={() => setCreateModalIsOpen(false)} createCommitment={createCommitment} />}
+            {createModalIsOpen && <CommitmentModal closeModal={() => setCreateModalIsOpen(false)} createCommitment={createCommitment} courseList={courses} />}
         </main>
     )
 }

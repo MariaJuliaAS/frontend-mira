@@ -1,5 +1,5 @@
 import { LuCalendar } from "react-icons/lu";
-import { format, isSameDay, parse } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { COMMITMENT_TYPES } from "../constants/commitmentTypes";
 import { TbTrash } from "react-icons/tb";
@@ -22,7 +22,7 @@ export function CommitmentCard({ commitments, onDelete, refresh, onDetail, selec
 
     const filteredCommitments = useMemo(() =>
         commitments.filter((c) =>
-            isSameDay(parse(c.date, "dd/MM/yyyy", new Date()), selectedDate)
+            isSameDay(c.date, selectedDate)
         ), [commitments, selectedDate]
     );
 

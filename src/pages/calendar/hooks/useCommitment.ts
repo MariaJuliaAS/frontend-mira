@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import type { CommitmentsProps } from "../types/calendarTypes";
+import type { CommitmentsProps, CreateCommitmentDTO } from "../types/calendarTypes";
 import { commitmentService } from "../services/commitmentService";
-import type { FormData } from "../modals/commitmentModal";
 
 export function useCommitment() {
     const [commitments, setCommitments] = useState<CommitmentsProps[]>([]);
@@ -25,7 +24,7 @@ export function useCommitment() {
         }
     }
 
-    async function createCommitment(data: FormData) {
+    async function createCommitment(data: CreateCommitmentDTO) {
         try {
             const response = await commitmentService.create(data);
             setCommitments(prev => [...prev, response]);
